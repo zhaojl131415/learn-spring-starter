@@ -1,0 +1,7 @@
+<beans>
+    <componentScan package = "com.zhao"></componentScan>
+
+
+
+    <view prefix = "/page/" suffix=".html"></view>
+</beans>
