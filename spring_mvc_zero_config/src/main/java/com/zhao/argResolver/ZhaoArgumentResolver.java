@@ -25,18 +25,11 @@ public class ZhaoArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-
-        //通过Reques.getParameter();
-        //request.getSession
-
-        //从redis 里面获取....
-
-        //父子容器
-        //参数类型解析器
-        //
-        System.out.println(1);
+        // 通过webRequest.getSession()或webRequest.getParameter("userId")
+        // 从request中获取session/userId, 从 mysql/redis 里面查询获取token或其他信息, 赋值给某个对象返回回去
+        System.out.println("ZhaoArgumentResolver");
         HashMap hashMap = new HashMap();
         hashMap.put("name","1");
-        return "abc";
+        return hashMap;
     }
 }

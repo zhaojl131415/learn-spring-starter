@@ -22,20 +22,11 @@ public class TestController {
 
     @RequestMapping("/test.do")
     @ResponseBody                                                   //user 对象  Map
-    public Object test(@ZhaoArg String name, HttpServletRequest request, HttpServletResponse response) {
-//        System.out.println(map.get("name"));
-        //map<name,value>
-        System.out.println("调用了");
-        System.out.println(name);
+    public Object test(@ZhaoArg Map map, HttpServletRequest request, HttpServletResponse response) {
         //拿当前登录用户的逻辑....
-//        request.setAttribute();
-        request.getParameter("name");
-        Map hashMap = new HashMap(2);
-//        response.getWriter()
-//        request.setAttribute();
-//        {}
-        hashMap.put("key", "value");
-        return hashMap;
+        System.out.println(map.toString());
+        // do something
+        return map;
     }
 
 

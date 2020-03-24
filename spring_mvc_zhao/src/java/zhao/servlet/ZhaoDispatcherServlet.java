@@ -127,7 +127,7 @@ public class ZhaoDispatcherServlet extends HttpServlet {
         String initParameter = config.getInitParameter(XML_PATH);
         //解析xml文件 file:xml 文件对象
         String filePath = projectPath + initParameter;
-//        File file = new File("/Users/zhaojinliang/Code/Source/test-mvc/src/resources/lubanMvc.xml");
+
         Document prase = prase(new File(filePath));
         Element rootElement = prase.getRootElement();
         Element view = rootElement.element("view");

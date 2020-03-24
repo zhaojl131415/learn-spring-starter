@@ -2,6 +2,7 @@ package com.zhao.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.zhao.argResolver.ZhaoArgumentResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -9,7 +10,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,11 +42,11 @@ import java.util.List;
 public class AppConfig implements WebMvcConfigurer {
 
 
-
     // 官方文档:https://docs.spring.io/spring/docs/5.2.4.RELEASE/spring-framework-reference/web.html#mvc-config
 
     /**
      * 配置视图解析器
+     *
      * @param registry
      */
     @Override
@@ -52,19 +56,43 @@ public class AppConfig implements WebMvcConfigurer {
 
     /**
      * 添加自定义参数解析器
+     *
      * @param resolvers
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(0, new ZhaoArgumentResolver());
+        // 当前这个resolvers 和spring mvc里面用resolvers不是同一个集合,
+        // 最后是通过spring mvc里面的resolvers.addAll(当前resolvers)的方式整合在一起argumentResolvers.addAll(customResolvers);
+        // 所以这里添加索引为0, 也无法让此自定义参数解析器第一个生效
+        // 但是这个问题没有复现, 可能是早期版本的bug, 现在已经修复了,
+        resolvers.add(new ZhaoArgumentResolver());
     }
+
+
+//    @Autowired //Spring mvc 环境初始化完之后 去加载这个方法
+////    @Bean //不行  因为这时候spring mvc 容器还没有初始化完成, 会报错 说没有RequestMappingHandlerAdapter
+//    public void initArgumentResolvers(RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
+//        // 所有参数解析器
+//        List<HandlerMethodArgumentResolver> argumentResolvers = new ArrayList<>(requestMappingHandlerAdapter.getArgumentResolvers());
+//        // 所有自定义的参数解析器
+//        List<HandlerMethodArgumentResolver> customResolvers = requestMappingHandlerAdapter.getCustomArgumentResolvers();
+//        // 剔除掉自定义的参数解析器
+//        argumentResolvers.removeAll(customResolvers);
+//        // 然后把自定义的参数解析器加入到头部
+//        argumentResolvers.addAll(0, customResolvers);
+//        // 重新设置参数解析器
+//        requestMappingHandlerAdapter.setArgumentResolvers(argumentResolvers);
+//    }
 
     /**
      * 配置消息转换器
+     *
      * @param converters
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new FastJsonHttpMessageConverter());
     }
+
+
 }

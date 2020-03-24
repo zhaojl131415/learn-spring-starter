@@ -13,12 +13,13 @@ import org.apache.catalina.startup.Tomcat;
 public class App {
     public static void main(String[] args) throws Exception {
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(80);
+        tomcat.setPort(8081);
+        tomcat.getConnector();
         //
         System.out.println(App.class.getResource("/"));
         // 只会去初始化一个context的资源目录 并不会加载web的生命周期
         Context context = tomcat.addContext("/", App.class.getResource("/").getPath().replaceAll("%20"," "));
-        // 会加载web的生命周期
+//         会加载web的生命周期
 //        Context context = tomcat.addWebapp("/", App.class.getResource("/").getPath().replaceAll("%20", " "));
         /**
          * web的生命周期:包括servlet的加载,监听器的加载,过滤器的加载,onStartup方法的调用等等一系列的操作
@@ -33,6 +34,9 @@ public class App {
         // 添加生命周期监听器, 会加载web的生命周期
         context.addLifecycleListener((LifecycleListener) Class.forName(tomcat.getHost().getConfigClass()).newInstance());
         tomcat.start();
+//        System.out.println(tomcat.getHost());
+//        System.out.println(tomcat.getServer());
+//        System.out.println(tomcat.getConnector());
 
         tomcat.getServer().await();
     }
