@@ -2,7 +2,10 @@ package com.zhao.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.zhao.converter.StringConvertDate;
+import org.springframework.boot.autoconfigure.web.embedded.TomcatWebServerFactoryCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -16,6 +19,21 @@ public class AppConfig {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
         factory.setPort(80);
         return factory;
+    }
+
+    @Bean
+    public WebServerFactoryCustomizer webServerFactoryCustomizer() {
+//        return new WebServerFactoryCustomizer() {
+//            @Override
+//            public void customize(WebServerFactory factory) {
+//
+//            }
+//        }
+
+        return (f) -> {
+            TomcatServletWebServerFactory factory = (TomcatServletWebServerFactory) f;
+            factory.setPort(8090);
+        };
     }
 
 
