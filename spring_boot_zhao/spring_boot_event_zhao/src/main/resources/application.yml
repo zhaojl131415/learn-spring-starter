@@ -1,0 +1,22 @@
+zhao:
+  email: zhaojl131415@163.com
+  child: {name: yu, age: 1}
+  wife:
+    name: li
+    age: 30
+  family:
+    - {name: yu, age: 1}
+    - {name: li, age: 30}
+  family1: [{name: yu, age: 1},{name: li, age: 30},{name: wu, age: 58}]
+  pay:
+    ali:
+      notifyUrl: www.taobao.com
+      returnUrl: www.tmall.com
+    wx:
+      notifyUrl: www.qq.com
+
+
+a: abc
+b: 2
+c: 3
+flag: true
