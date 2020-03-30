@@ -1,0 +1,9 @@
+
+# Application Context Initializers
+org.springframework.context.ApplicationContextInitializer=\
+com.zhao.runListener.ZhaoInitializer
+
+# Application Listeners
+org.springframework.boot.SpringApplicationRunListener=\
+com.zhao.runListener.ZhaoRunListener,\
+com.zhao.runListener.ZhaoRunListener2

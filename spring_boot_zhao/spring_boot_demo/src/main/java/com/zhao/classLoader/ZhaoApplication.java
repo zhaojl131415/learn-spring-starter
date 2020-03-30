@@ -50,11 +50,11 @@ public class ZhaoApplication {
     }
 
     public static void stop() {
-
+        // 清理缓存, 清除对象引用
 //        ApplicationContext.stop;
         //告诉jvm需要gc了
         System.gc();
-        //告诉jvm可以清除对象引用
+        // 运行任何对象的终止方法。
         System.runFinalization();
         System.out.println("退出应用程序");
     }
