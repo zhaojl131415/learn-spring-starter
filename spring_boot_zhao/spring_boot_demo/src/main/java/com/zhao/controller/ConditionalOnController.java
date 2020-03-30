@@ -18,6 +18,7 @@ public class ConditionalOnController {
     @GetMapping("/conditional")
     public String test() {
         System.out.println(a);
+        System.out.println(a);
         return "";
     }
 }

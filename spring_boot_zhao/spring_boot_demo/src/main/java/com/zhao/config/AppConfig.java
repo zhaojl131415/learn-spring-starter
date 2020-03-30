@@ -14,27 +14,28 @@ import org.springframework.http.converter.HttpMessageConverter;
 @Configuration
 public class AppConfig {
 
-    @Bean
-    public TomcatServletWebServerFactory getTomcatServletWebServerFactory() {
-        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        factory.setPort(80);
-        return factory;
-    }
-
-    @Bean
-    public WebServerFactoryCustomizer webServerFactoryCustomizer() {
+//    @Bean
+//    public TomcatServletWebServerFactory getTomcatServletWebServerFactory() {
+//        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+//        factory.setPort(80);
+//        return factory;
+//    }
+//
+//    @Bean
+//    public WebServerFactoryCustomizer webServerFactoryCustomizer() {
 //        return new WebServerFactoryCustomizer() {
 //            @Override
-//            public void customize(WebServerFactory factory) {
-//
+//            public void customize(WebServerFactory f) {
+//                TomcatServletWebServerFactory factory = (TomcatServletWebServerFactory) f;
+//                factory.setPort(8090);
 //            }
-//        }
-
-        return (f) -> {
-            TomcatServletWebServerFactory factory = (TomcatServletWebServerFactory) f;
-            factory.setPort(8090);
-        };
-    }
+//        };
+//
+////        return (f) -> {
+////            TomcatServletWebServerFactory factory = (TomcatServletWebServerFactory) f;
+////            factory.setPort(8090);
+////        };
+//    }
 
 
 
