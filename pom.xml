@@ -20,6 +20,8 @@
         <module>spring_boot_zhao</module>
         <module>spring_mvc_zhao</module>
         <module>spring_mvc_zero_config</module>
+        <module>io_zhao</module>
+        <module>jvm_zhao</module>
     </modules>
 
 </project>
