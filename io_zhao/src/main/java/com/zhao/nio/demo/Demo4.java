@@ -20,10 +20,12 @@ public class Demo4 {
         FileChannel writeChannel = fos.getChannel();
 
 
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        ByteBuffer buffer = ByteBuffer.allocate(5);
 
         while (true) {
-//            buffer.clear();
+            // 清空buffer的位置, position设置为0, limit为capacity
+            buffer.clear();
+            // 如果buffer这里没有清空位置, position值为5, read永远都是返回0, 会死循环, 不会break, 一直读的就是 position:1-5的数据
             System.out.println("----position----" + buffer.position());
             int read = readChannel.read(buffer);
             System.out.println(read);
@@ -32,7 +34,7 @@ public class Demo4 {
             }
             // 把position设置为0
             buffer.flip();
-            // 这里是往通道写数据, 但是前提是要从buffer把数据读出来,
+            // 这里是往通道写数据, 但是对于buffer而言是读, 可以理解为写是要从buffer里先把数据读出来,
             // 前面虽然已经把position设置为0, 但是这里一读, 又给读到调用flip之前的position的位置, position又变成原来的值了, 等于没有归零
             writeChannel.write(buffer);
         }
