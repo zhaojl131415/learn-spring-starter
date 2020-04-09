@@ -1,0 +1,38 @@
+syntax = "proto2";
+
+package com.luban.protobuf;
+
+option java_package = "com.luban.protobuf";
+option java_outer_classname = "DataInfo";
+
+message MyObject{
+    enum DataType {
+        StudentType = 0;
+        TeacherType = 1;
+        PatriarchType = 2;
+    }
+    required DataType data_type = 1;
+
+    oneof DataBody{
+        Student student=2;
+        Teacher teacher=3;
+        Patriarch patriarch=4;
+    }
+}
+
+message Student{
+    optional string name = 1;
+    optional int32 age = 2;
+    optional string address = 3;
+}
+
+message Teacher{
+    optional string name = 1;
+    optional int32 age = 2;
+    optional string duty=3;
+}
+
+message Patriarch{
+    optional string name = 1;
+    optional int32 id = 2;
+}
