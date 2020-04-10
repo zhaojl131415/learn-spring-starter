@@ -34,7 +34,7 @@ public class ClientRpcProxy {
                 //创建客户端启动助手  完成相关配置
                 Bootstrap bootstrap=new Bootstrap();
                 //创建业务处理类
-                ClientSocketNettyHendler nettyClientHendler = new ClientSocketNettyHendler();
+                ClientSocketNettyHandler nettyClientHendler = new ClientSocketNettyHandler();
                 try {
                     bootstrap.group(eventExecutors)    //设置线程组
                             .channel(NioSocketChannel.class) //设置使用SocketChannel为管道通信的底层实现
@@ -60,6 +60,7 @@ public class ClientRpcProxy {
                     ChannelFuture future = bootstrap.connect("127.0.0.1", 9090).sync();  //connect方法是异步的    sync方法是同步的
                     future.channel().writeAndFlush(classInfo).sync();
                     //关闭连接  异步非阻塞
+                    // 这里因为调用了.sync()，是同步的，会阻塞，只有当客户端关闭才会执行通过，执行后续代码
                     future.channel().closeFuture().sync();
                 }catch (Exception e){
                     e.printStackTrace();

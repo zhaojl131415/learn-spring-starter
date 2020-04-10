@@ -9,7 +9,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 
-public class TestServerLnitializer extends ChannelInitializer<SocketChannel> {
+public class TestServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
@@ -21,9 +21,11 @@ public class TestServerLnitializer extends ChannelInitializer<SocketChannel> {
         //2.3 对于http的消息进行聚合,聚合成FullHttpRequest或者FullHttpResponse
         pipeline.addLast(new HttpObjectAggregator(1024*64));
         //针对客户端，如果1分钟之内没有向服务器发送读写心跳，则主动断开
+        // 服务器端：40秒没有读到数据，50秒没有写出数据，45秒既没有读也没有写数据
         pipeline.addLast(new IdleStateHandler(40,50,45));
         //自定义的读写空闲状态检测
         pipeline.addLast(new HeartBeatHandler());
+        // WebSocket处理器：入栈
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
         //定义自己的handler,主要是对请求进行处理和发送
         pipeline.addLast(new ChatHandler());

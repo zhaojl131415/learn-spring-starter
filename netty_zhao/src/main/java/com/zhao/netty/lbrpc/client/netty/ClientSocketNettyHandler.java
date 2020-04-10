@@ -3,7 +3,7 @@ package com.zhao.netty.lbrpc.client.netty;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class ClientSocketNettyHendler extends ChannelInboundHandlerAdapter {
+public class ClientSocketNettyHandler extends ChannelInboundHandlerAdapter {
 
     private Object response;
 

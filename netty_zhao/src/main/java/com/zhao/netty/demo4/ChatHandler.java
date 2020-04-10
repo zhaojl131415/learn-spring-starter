@@ -24,6 +24,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
      * @param msg 文本消息
      * @throws Exception
      */
+    @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
         //1. 获取客户端传递过来的消息,其对象为TextWebSocketFrame
         String text = msg.text();
