@@ -8,9 +8,20 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 请求拦截器
+ */
 @Component
 public class RequestInterceptor implements HandlerInterceptor {
 
+    /**
+     * 拦截请求中的事务组id(groupId)和事务数量
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String groupId = request.getHeader("groupId");

@@ -2,10 +2,16 @@ package com.zhao.transaction.transactional;
 
 import com.zhao.transaction.util.Task;
 
+/**
+ * 子事务
+ */
 public class ZhaoTransaction {
 
+    // 事务组id
     private String groupId;
+    // 当前事务id
     private String transactionId;
+    // 事务结果类型
     private TransactionType transactionType;   // commit-待提交，rollback-待回滚
     private Task task = new Task();
 

@@ -8,9 +8,19 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class ZhaoConnection implements Connection {
 
+/**
+ * seata实现分布式事务的关键: 阻塞事务连接的提交或者回滚
+ * 每个子事务执行完自己的业务逻辑, 先不直接提交, 而是向事务管理器上报自己的执行结果,
+ * 如果事务管理器收到所有的子事务的结果都成功, 就给每个子事务发送提交命令,
+ * 如果事务管理器收到一个子事务的结果失败, 就给每个子事务发送回滚命令.
+ *
+ * 为了拿到事务的控制权, 不然子事务直接提交, 先要获取数据库连接控制.
+ */
+public class ZhaoConnection implements Connection {
+    // 连接
     private Connection connection;
+    // 子事务
     private ZhaoTransaction zhaoTransaction;
 
     public ZhaoConnection(Connection connection, ZhaoTransaction zhaoTransaction) {
@@ -25,7 +35,7 @@ public class ZhaoConnection implements Connection {
             try {
                 // 阻塞
                 zhaoTransaction.getTask().waitTask();
-                // 唤醒后判断事务提交还是回滚
+                // 等待事务管理器唤醒, 并接收其发送的命令:提交/回滚
                 if (zhaoTransaction.getTransactionType().equals(TransactionType.rollback)) {
                     connection.rollback();
                 } else {

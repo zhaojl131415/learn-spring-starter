@@ -23,7 +23,11 @@ public class ZhaoDataSourceAspect {
      */
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Connection around(ProceedingJoinPoint point) throws Throwable {
+
         if (ZhaoTransactionManager.getCurrent() != null) {
+            /**
+             * 拦截所有的获取数据库连接的方法
+             */
             return new ZhaoConnection((Connection) point.proceed(), ZhaoTransactionManager.getCurrent());
         } else {
             return (Connection) point.proceed();
