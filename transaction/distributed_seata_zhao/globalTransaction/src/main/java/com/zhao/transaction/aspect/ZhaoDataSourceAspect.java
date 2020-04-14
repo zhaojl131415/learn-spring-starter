@@ -1,7 +1,7 @@
 package com.zhao.transaction.aspect;
 
-import com.zhao.server.transaction.connection.LbConnection;
-import com.zhao.server.transaction.transactional.LbTransactionManager;
+import com.zhao.transaction.connection.ZhaoConnection;
+import com.zhao.transaction.transactional.ZhaoTransactionManager;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,7 +11,7 @@ import java.sql.Connection;
 
 @Aspect
 @Component
-public class LbDataSourceAspect {
+public class ZhaoDataSourceAspect {
 
     /**
      * 切的是一个接口，所以所有的实现类都会被切到
@@ -23,8 +23,8 @@ public class LbDataSourceAspect {
      */
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Connection around(ProceedingJoinPoint point) throws Throwable {
-        if (LbTransactionManager.getCurrent() != null) {
-            return new LbConnection((Connection) point.proceed(), LbTransactionManager.getCurrent());
+        if (ZhaoTransactionManager.getCurrent() != null) {
+            return new ZhaoConnection((Connection) point.proceed(), ZhaoTransactionManager.getCurrent());
         } else {
             return (Connection) point.proceed();
         }

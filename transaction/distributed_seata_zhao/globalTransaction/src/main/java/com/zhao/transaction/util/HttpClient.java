@@ -1,6 +1,6 @@
 package com.zhao.transaction.util;
 
-import com.zhao.server.transaction.transactional.LbTransactionManager;
+import com.zhao.transaction.transactional.ZhaoTransactionManager;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -17,8 +17,8 @@ public class HttpClient {
 
             HttpGet httpGet = new HttpGet(url);
             httpGet.addHeader("Content-type", "application/json");
-            httpGet.addHeader("groupId", LbTransactionManager.getCurrentGroupId());
-            httpGet.addHeader("transactionCount", String.valueOf(LbTransactionManager.getTransactionCount()));
+            httpGet.addHeader("groupId", ZhaoTransactionManager.getCurrentGroupId());
+            httpGet.addHeader("transactionCount", String.valueOf(ZhaoTransactionManager.getTransactionCount()));
             CloseableHttpResponse response = httpClient.execute(httpGet);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

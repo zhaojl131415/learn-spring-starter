@@ -1,7 +1,7 @@
 package com.zhao.server;
 
-import com.zhao.transaction.annotation.Lbtransactional;
-import com.zhao.transaction.transactional.LbTransactionManager;
+import com.zhao.transaction.annotation.ZhaoTransactional;
+import com.zhao.transaction.transactional.ZhaoTransactionManager;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -18,7 +18,7 @@ public class DemoService {
     @Autowired
     private DemoDao demoDao;
 
-    @Lbtransactional(isStart = true)
+    @ZhaoTransactional(isStart = true)
     @Transactional
     public void test() {
         demoDao.insert("server1");
@@ -34,8 +34,8 @@ public class DemoService {
 
             HttpGet httpGet = new HttpGet(url);
             httpGet.addHeader("Content-type", "application/json");
-            httpGet.addHeader("groupId", LbTransactionManager.getCurrentGroupId());
-            httpGet.addHeader("transactionCount", String.valueOf(LbTransactionManager.getTransactionCount()));
+            httpGet.addHeader("groupId", ZhaoTransactionManager.getCurrentGroupId());
+            httpGet.addHeader("transactionCount", String.valueOf(ZhaoTransactionManager.getTransactionCount()));
             CloseableHttpResponse response = httpClient.execute(httpGet);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

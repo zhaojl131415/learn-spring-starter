@@ -1,6 +1,6 @@
 package com.zhao.transaction.intercept;
 
-import com.zhao.server.transaction.transactional.LbTransactionManager;
+import com.zhao.transaction.transactional.ZhaoTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,8 +15,8 @@ public class RequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String groupId = request.getHeader("groupId");
         String transactionCount = request.getHeader("transactionCount");
-        LbTransactionManager.setCurrentGroupId(groupId);
-        LbTransactionManager.setTransactionCount(Integer.valueOf(transactionCount == null ? "0" : transactionCount));
+        ZhaoTransactionManager.setCurrentGroupId(groupId);
+        ZhaoTransactionManager.setTransactionCount(Integer.valueOf(transactionCount == null ? "0" : transactionCount));
         return true;
     }
 

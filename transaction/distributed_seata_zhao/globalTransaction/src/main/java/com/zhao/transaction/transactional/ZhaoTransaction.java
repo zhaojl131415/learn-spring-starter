@@ -1,21 +1,21 @@
 package com.zhao.transaction.transactional;
 
-import com.zhao.server.transaction.util.Task;
+import com.zhao.transaction.util.Task;
 
-public class LbTransaction {
+public class ZhaoTransaction {
 
     private String groupId;
     private String transactionId;
     private TransactionType transactionType;   // commit-待提交，rollback-待回滚
     private Task task = new Task();
 
-    public LbTransaction(String groupId, String transactionId) {
+    public ZhaoTransaction(String groupId, String transactionId) {
         this.groupId = groupId;
         this.transactionId = transactionId;
         this.task = new Task();
     }
 
-    public LbTransaction(String groupId, String transactionId, TransactionType transactionType) {
+    public ZhaoTransaction(String groupId, String transactionId, TransactionType transactionType) {
         this.groupId = groupId;
         this.transactionId = transactionId;
         this.transactionType = transactionType;

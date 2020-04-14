@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Lbtransactional {
+public @interface ZhaoTransactional {
     // 代表属于分布式事务
 
 

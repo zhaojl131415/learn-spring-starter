@@ -2,9 +2,9 @@ package com.zhao.transaction.netty;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.zhao.server.transaction.transactional.LbTransaction;
-import com.zhao.server.transaction.transactional.LbTransactionManager;
-import com.zhao.server.transaction.transactional.TransactionType;
+import com.zhao.transaction.transactional.ZhaoTransaction;
+import com.zhao.transaction.transactional.ZhaoTransactionManager;
+import com.zhao.transaction.transactional.TransactionType;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -29,13 +29,13 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         // 对事务进行操作
 
 
-        LbTransaction lbTransaction = LbTransactionManager.getLbTransaction(groupId);
+        ZhaoTransaction zhaoTransaction = ZhaoTransactionManager.getLbTransaction(groupId);
         if (command.equals("rollback")) {
-            lbTransaction.setTransactionType(TransactionType.rollback);
+            zhaoTransaction.setTransactionType(TransactionType.rollback);
         } else if (command.equals("commit")) {
-            lbTransaction.setTransactionType(TransactionType.commit);
+            zhaoTransaction.setTransactionType(TransactionType.commit);
         }
-        lbTransaction.getTask().signalTask();
+        zhaoTransaction.getTask().signalTask();
     }
 
     public synchronized Object call(JSONObject data) throws Exception {

@@ -1,21 +1,21 @@
 package com.zhao.transaction.connection;
 
-import com.zhao.server.transaction.transactional.LbTransaction;
-import com.zhao.server.transaction.transactional.TransactionType;
+import com.zhao.transaction.transactional.ZhaoTransaction;
+import com.zhao.transaction.transactional.TransactionType;
 
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class LbConnection implements Connection {
+public class ZhaoConnection implements Connection {
 
     private Connection connection;
-    private LbTransaction lbTransaction;
+    private ZhaoTransaction zhaoTransaction;
 
-    public LbConnection(Connection connection, LbTransaction lbTransaction) {
+    public ZhaoConnection(Connection connection, ZhaoTransaction zhaoTransaction) {
         this.connection = connection;
-        this.lbTransaction = lbTransaction;
+        this.zhaoTransaction = zhaoTransaction;
     }
 
     @Override
@@ -23,20 +23,17 @@ public class LbConnection implements Connection {
 
         // 要提交的时候先不提交，等TxManager的通知再提交
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    lbTransaction.getTask().waitTask();
-                    if (lbTransaction.getTransactionType().equals(TransactionType.rollback)) {
-                        connection.rollback();
-                    } else {
-                        connection.commit();
-                    }
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            try {
+                zhaoTransaction.getTask().waitTask();
+                if (zhaoTransaction.getTransactionType().equals(TransactionType.rollback)) {
+                    connection.rollback();
+                } else {
+                    connection.commit();
                 }
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -44,16 +41,13 @@ public class LbConnection implements Connection {
     @Override
     public void rollback() throws SQLException {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    lbTransaction.getTask().waitTask();
-                    connection.rollback();
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                zhaoTransaction.getTask().waitTask();
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }).start();
 

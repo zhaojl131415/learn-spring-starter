@@ -1,7 +1,7 @@
 package com.zhao.transaction.transactional;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zhao.server.transaction.netty.NettyClient;
+import com.zhao.transaction.netty.NettyClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,21 +10,21 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class LbTransactionManager {
+public class ZhaoTransactionManager {
 
 
     private static NettyClient nettyClient;
 
-    private static ThreadLocal<LbTransaction> current = new ThreadLocal<>();
+    private static ThreadLocal<ZhaoTransaction> current = new ThreadLocal<>();
     private static ThreadLocal<String> currentGroupId = new ThreadLocal<>();
     private static ThreadLocal<Integer> transactionCount = new ThreadLocal<>();
 
     @Autowired
     public void setNettyClient(NettyClient nettyClient) {
-        LbTransactionManager.nettyClient = nettyClient;
+        ZhaoTransactionManager.nettyClient = nettyClient;
     }
 
-    public static Map<String, LbTransaction> LB_TRANSACION_MAP = new HashMap<>();
+    public static Map<String, ZhaoTransaction> LB_TRANSACION_MAP = new HashMap<>();
 
     /**
      * 创建事务组，并且返回groupId
@@ -47,43 +47,43 @@ public class LbTransactionManager {
      * @param groupId
      * @return
      */
-    public static LbTransaction createLbTransaction(String groupId) {
+    public static ZhaoTransaction createLbTransaction(String groupId) {
         String transactionId = UUID.randomUUID().toString();
-        LbTransaction lbTransaction = new LbTransaction(groupId, transactionId);
-        LB_TRANSACION_MAP.put(groupId, lbTransaction);
-        current.set(lbTransaction);
+        ZhaoTransaction zhaoTransaction = new ZhaoTransaction(groupId, transactionId);
+        LB_TRANSACION_MAP.put(groupId, zhaoTransaction);
+        current.set(zhaoTransaction);
         addTransactionCount();
 
         System.out.println("创建事务");
 
-        return lbTransaction;
+        return zhaoTransaction;
     }
 
     /**
      * 添加事务到事务组
-     * @param lbTransaction
+     * @param zhaoTransaction
      * @param isEnd
      * @param transactionType
      * @return
      */
-    public static LbTransaction addLbTransaction(LbTransaction lbTransaction, Boolean isEnd, TransactionType transactionType) {
+    public static ZhaoTransaction addLbTransaction(ZhaoTransaction zhaoTransaction, Boolean isEnd, TransactionType transactionType) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("groupId", lbTransaction.getGroupId());
-        jsonObject.put("transactionId", lbTransaction.getTransactionId());
+        jsonObject.put("groupId", zhaoTransaction.getGroupId());
+        jsonObject.put("transactionId", zhaoTransaction.getTransactionId());
         jsonObject.put("transactionType", transactionType);
         jsonObject.put("command", "add");
         jsonObject.put("isEnd", isEnd);
-        jsonObject.put("transactionCount", LbTransactionManager.getTransactionCount());
+        jsonObject.put("transactionCount", ZhaoTransactionManager.getTransactionCount());
         nettyClient.send(jsonObject);
         System.out.println("添加事务");
-        return lbTransaction;
+        return zhaoTransaction;
     }
 
-    public static LbTransaction getLbTransaction(String groupId) {
+    public static ZhaoTransaction getLbTransaction(String groupId) {
         return LB_TRANSACION_MAP.get(groupId);
     }
 
-    public static LbTransaction getCurrent() {
+    public static ZhaoTransaction getCurrent() {
         return current.get();
     }
     public static String getCurrentGroupId() {

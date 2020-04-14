@@ -1,9 +1,9 @@
 package com.zhao.transaction.aspect;
 
-import com.zhao.server.transaction.annotation.Lbtransactional;
-import com.zhao.server.transaction.transactional.LbTransaction;
-import com.zhao.server.transaction.transactional.LbTransactionManager;
-import com.zhao.server.transaction.transactional.TransactionType;
+import com.zhao.transaction.annotation.ZhaoTransactional;
+import com.zhao.transaction.transactional.ZhaoTransaction;
+import com.zhao.transaction.transactional.ZhaoTransactionManager;
+import com.zhao.transaction.transactional.TransactionType;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 
 @Aspect
 @Component
-public class LbTransactionAspect implements Ordered {
+public class ZhaoTransactionAspect implements Ordered {
 
 
     @Around("@annotation(com.zhao.server.transaction.annotation.Lbtransactional)")
@@ -23,26 +23,26 @@ public class LbTransactionAspect implements Ordered {
         // 打印出这个注解所对应的方法
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
-        Lbtransactional lbAnnotation = method.getAnnotation(Lbtransactional.class);
+        ZhaoTransactional lbAnnotation = method.getAnnotation(ZhaoTransactional.class);
 
         String groupId = "";
         if (lbAnnotation.isStart()) {
-            groupId = LbTransactionManager.createLbTransactionGroup();
+            groupId = ZhaoTransactionManager.createLbTransactionGroup();
         } else {
-            groupId = LbTransactionManager.getCurrentGroupId();
+            groupId = ZhaoTransactionManager.getCurrentGroupId();
         }
 
-        LbTransaction lbTransaction = LbTransactionManager.createLbTransaction(groupId);
+        ZhaoTransaction zhaoTransaction = ZhaoTransactionManager.createLbTransaction(groupId);
 
         try {
             // spring会开启mysql事务
             point.proceed();
-            LbTransactionManager.addLbTransaction(lbTransaction, lbAnnotation.isEnd(), TransactionType.commit);
+            ZhaoTransactionManager.addLbTransaction(zhaoTransaction, lbAnnotation.isEnd(), TransactionType.commit);
         } catch (Exception e) {
-            LbTransactionManager.addLbTransaction(lbTransaction, lbAnnotation.isEnd(), TransactionType.rollback);
+            ZhaoTransactionManager.addLbTransaction(zhaoTransaction, lbAnnotation.isEnd(), TransactionType.rollback);
             e.printStackTrace();
         } catch (Throwable throwable) {
-            LbTransactionManager.addLbTransaction(lbTransaction, lbAnnotation.isEnd(), TransactionType.rollback);
+            ZhaoTransactionManager.addLbTransaction(zhaoTransaction, lbAnnotation.isEnd(), TransactionType.rollback);
             throwable.printStackTrace();
         }
     }
