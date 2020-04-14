@@ -30,3 +30,4 @@
 **/logs/
 /transaction-logs/
 **/src/test/
+workspace

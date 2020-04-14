@@ -24,6 +24,15 @@
         <module>jvm_zhao</module>
         <module>netty_zhao</module>
         <module>transaction</module>
+        <module>load_balancing_algorithm</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+        </dependency>
+    </dependencies>
 
 </project>
