@@ -16,6 +16,7 @@
         <module>server2</module>
         <module>server3</module>
         <module>txmanager</module>
+        <module>globalTransaction</module>
     </modules>
 
 
