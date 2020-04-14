@@ -1,6 +1,6 @@
 package com.zhao.server;
 
-import com.zhao.transaction.annotation.ZhaoTransactional;
+import com.zhao.transaction.annotation.ZhaoGlobalTransaction;
 import com.zhao.transaction.transactional.ZhaoTransactionManager;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,7 +18,7 @@ public class DemoService {
     @Autowired
     private DemoDao demoDao;
 
-    @ZhaoTransactional(isStart = true)
+    @ZhaoGlobalTransaction(isStart = true)
     @Transactional
     public void test() {
         demoDao.insert("server1");

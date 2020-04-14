@@ -29,7 +29,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         // 对事务进行操作
 
 
-        ZhaoTransaction zhaoTransaction = ZhaoTransactionManager.getLbTransaction(groupId);
+        ZhaoTransaction zhaoTransaction = ZhaoTransactionManager.getTransaction(groupId);
         if (command.equals("rollback")) {
             zhaoTransaction.setTransactionType(TransactionType.rollback);
         } else if (command.equals("commit")) {

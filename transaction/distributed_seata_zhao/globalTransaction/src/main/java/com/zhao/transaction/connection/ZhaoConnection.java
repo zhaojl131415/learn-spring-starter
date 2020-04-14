@@ -20,12 +20,12 @@ public class ZhaoConnection implements Connection {
 
     @Override
     public void commit() throws SQLException {
-
         // 要提交的时候先不提交，等TxManager的通知再提交
-
         new Thread(() -> {
             try {
+                // 阻塞
                 zhaoTransaction.getTask().waitTask();
+                // 唤醒后判断事务提交还是回滚
                 if (zhaoTransaction.getTransactionType().equals(TransactionType.rollback)) {
                     connection.rollback();
                 } else {
@@ -43,7 +43,9 @@ public class ZhaoConnection implements Connection {
 
         new Thread(() -> {
             try {
+                // 阻塞
                 zhaoTransaction.getTask().waitTask();
+                // 回滚
                 connection.rollback();
                 connection.close();
             } catch (SQLException e) {

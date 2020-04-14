@@ -1,6 +1,6 @@
 package com.zhao.transaction.aspect;
 
-import com.zhao.transaction.annotation.ZhaoTransactional;
+import com.zhao.transaction.annotation.ZhaoGlobalTransaction;
 import com.zhao.transaction.transactional.ZhaoTransaction;
 import com.zhao.transaction.transactional.ZhaoTransactionManager;
 import com.zhao.transaction.transactional.TransactionType;
@@ -13,41 +13,50 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
+/**
+ * 全局事务 切面
+ *
+ * @author zhaojinliang
+ * @date 2020-04-14 15:26
+ */
 @Aspect
 @Component
-public class ZhaoTransactionAspect implements Ordered {
+public class ZhaoGlobalTransactionAspect implements Ordered {
 
-
-    @Around("@annotation(com.zhao.server.transaction.annotation.Lbtransactional)")
+    @Around("@annotation(com.zhao.transaction.annotation.ZhaoGlobalTransaction)")
     public void invoke(ProceedingJoinPoint point) {
         // 打印出这个注解所对应的方法
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
-        ZhaoTransactional lbAnnotation = method.getAnnotation(ZhaoTransactional.class);
+        ZhaoGlobalTransaction annotation = method.getAnnotation(ZhaoGlobalTransaction.class);
 
         String groupId = "";
-        if (lbAnnotation.isStart()) {
-            groupId = ZhaoTransactionManager.createLbTransactionGroup();
+        if (annotation.isStart()) {
+            groupId = ZhaoTransactionManager.createTransactionGroup();
         } else {
             groupId = ZhaoTransactionManager.getCurrentGroupId();
         }
 
-        ZhaoTransaction zhaoTransaction = ZhaoTransactionManager.createLbTransaction(groupId);
+        ZhaoTransaction zhaoTransaction = ZhaoTransactionManager.createTransaction(groupId);
 
         try {
             // spring会开启mysql事务
             point.proceed();
-            ZhaoTransactionManager.addLbTransaction(zhaoTransaction, lbAnnotation.isEnd(), TransactionType.commit);
+            ZhaoTransactionManager.addTransaction(zhaoTransaction, annotation.isEnd(), TransactionType.commit);
         } catch (Exception e) {
-            ZhaoTransactionManager.addLbTransaction(zhaoTransaction, lbAnnotation.isEnd(), TransactionType.rollback);
+            ZhaoTransactionManager.addTransaction(zhaoTransaction, annotation.isEnd(), TransactionType.rollback);
             e.printStackTrace();
         } catch (Throwable throwable) {
-            ZhaoTransactionManager.addLbTransaction(zhaoTransaction, lbAnnotation.isEnd(), TransactionType.rollback);
+            ZhaoTransactionManager.addTransaction(zhaoTransaction, annotation.isEnd(), TransactionType.rollback);
             throwable.printStackTrace();
         }
     }
 
 
+    /**
+     * 切面的优先级
+     * @return
+     */
     @Override
     public int getOrder() {
         return 10000;

@@ -24,13 +24,13 @@ public class ZhaoTransactionManager {
         ZhaoTransactionManager.nettyClient = nettyClient;
     }
 
-    public static Map<String, ZhaoTransaction> LB_TRANSACION_MAP = new HashMap<>();
+    public static Map<String, ZhaoTransaction> TRANSACION_MAP = new HashMap<>();
 
     /**
      * 创建事务组，并且返回groupId
      * @return
      */
-    public static String createLbTransactionGroup() {
+    public static String createTransactionGroup() {
         String groupId = UUID.randomUUID().toString();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("groupId", groupId);
@@ -47,10 +47,10 @@ public class ZhaoTransactionManager {
      * @param groupId
      * @return
      */
-    public static ZhaoTransaction createLbTransaction(String groupId) {
+    public static ZhaoTransaction createTransaction(String groupId) {
         String transactionId = UUID.randomUUID().toString();
         ZhaoTransaction zhaoTransaction = new ZhaoTransaction(groupId, transactionId);
-        LB_TRANSACION_MAP.put(groupId, zhaoTransaction);
+        TRANSACION_MAP.put(groupId, zhaoTransaction);
         current.set(zhaoTransaction);
         addTransactionCount();
 
@@ -66,7 +66,7 @@ public class ZhaoTransactionManager {
      * @param transactionType
      * @return
      */
-    public static ZhaoTransaction addLbTransaction(ZhaoTransaction zhaoTransaction, Boolean isEnd, TransactionType transactionType) {
+    public static ZhaoTransaction addTransaction(ZhaoTransaction zhaoTransaction, Boolean isEnd, TransactionType transactionType) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("groupId", zhaoTransaction.getGroupId());
         jsonObject.put("transactionId", zhaoTransaction.getTransactionId());
@@ -79,8 +79,8 @@ public class ZhaoTransactionManager {
         return zhaoTransaction;
     }
 
-    public static ZhaoTransaction getLbTransaction(String groupId) {
-        return LB_TRANSACION_MAP.get(groupId);
+    public static ZhaoTransaction getTransaction(String groupId) {
+        return TRANSACION_MAP.get(groupId);
     }
 
     public static ZhaoTransaction getCurrent() {
