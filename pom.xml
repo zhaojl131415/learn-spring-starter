@@ -23,6 +23,7 @@
         <module>io_zhao</module>
         <module>jvm_zhao</module>
         <module>netty_zhao</module>
+        <module>transaction</module>
     </modules>
 
 </project>
