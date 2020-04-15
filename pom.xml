@@ -25,6 +25,7 @@
         <module>netty_zhao</module>
         <module>transaction</module>
         <module>load_balancing_algorithm</module>
+        <module>dubbo</module>
     </modules>
 
     <dependencies>
