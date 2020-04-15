@@ -1,4 +1,4 @@
-package com.zhao.netty.lbrpc.entity;
+package com.zhao.netty.rpc_zhao.entity;
 
 import java.io.Serializable;
 

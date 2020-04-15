@@ -1,6 +1,6 @@
-package com.zhao.netty.lbrpc.server.service.impl;
+package com.zhao.netty.rpc_zhao.server.service.impl;
 
-import com.zhao.netty.lbrpc.server.service.TestService;
+import com.zhao.netty.rpc_zhao.server.service.TestService;
 
 import java.util.ArrayList;
 import java.util.List;

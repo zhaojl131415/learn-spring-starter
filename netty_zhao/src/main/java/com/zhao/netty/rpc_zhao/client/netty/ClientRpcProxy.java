@@ -1,6 +1,6 @@
-package com.zhao.netty.lbrpc.client.netty;
+package com.zhao.netty.rpc_zhao.client.netty;
 
-import com.zhao.netty.lbrpc.entity.ClassInfo;
+import com.zhao.netty.rpc_zhao.entity.ClassInfo;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

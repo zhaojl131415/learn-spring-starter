@@ -1,7 +1,7 @@
-package com.zhao.netty.lbrpc.client.netty;
+package com.zhao.netty.rpc_zhao.client.netty;
 
 
-import com.zhao.netty.lbrpc.server.service.TestService;
+import com.zhao.netty.rpc_zhao.server.service.TestService;
 
 public class ClientSocketNetty {
     public static void main(String[] args) throws InterruptedException {

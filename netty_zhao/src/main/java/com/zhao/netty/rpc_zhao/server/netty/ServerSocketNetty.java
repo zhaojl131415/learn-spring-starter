@@ -1,4 +1,4 @@
-package com.zhao.netty.lbrpc.server.netty;
+package com.zhao.netty.rpc_zhao.server.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;

@@ -1,6 +1,6 @@
-package com.zhao.netty.lbrpc.server.netty;
+package com.zhao.netty.rpc_zhao.server.netty;
 
-import com.zhao.netty.lbrpc.entity.ClassInfo;
+import com.zhao.netty.rpc_zhao.entity.ClassInfo;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -27,12 +27,12 @@ public class ServerSocketNettyHandler extends ChannelInboundHandlerAdapter {
      */
     public String getImplClassName(ClassInfo classInfo) throws Exception {
         //服务器接口与实现类地址;
-        String iName = "com.zhao.netty.lbrpc.server.service";
-        // 获取客户端类信息的全限定名的最后一个点的位置 : com.zhao.netty.lbrpc.client.service.TestService
+        String iName = "com.zhao.netty.rpc_zhao.server.service";
+        // 获取客户端类信息的全限定名的最后一个点的位置 : com.zhao.netty.rpc_zhao.client.service.TestService
         int i = classInfo.getClassName().lastIndexOf(".");
         // 根据最后一个点的位置截取之后的文件名：.TestService
         String className = classInfo.getClassName().substring(i);
-        // 服务端接口的路径 + 截取后的文件名 ： com.zhao.netty.lbrpc.server.service.TestService
+        // 服务端接口的路径 + 截取后的文件名 ： com.zhao.netty.rpc_zhao.server.service.TestService
         // 得到拼接后的全类名，加载类
         Class aClass = Class.forName(iName + className);
         // 反射

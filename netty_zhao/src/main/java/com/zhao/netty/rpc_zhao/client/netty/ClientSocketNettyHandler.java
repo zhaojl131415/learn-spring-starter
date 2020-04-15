@@ -1,4 +1,4 @@
-package com.zhao.netty.lbrpc.client.netty;
+package com.zhao.netty.rpc_zhao.client.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
