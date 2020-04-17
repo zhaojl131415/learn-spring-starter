@@ -26,6 +26,7 @@
         <module>transaction</module>
         <module>load_balancing_algorithm</module>
         <module>dubbo</module>
+        <module>spi</module>
     </modules>
 
     <dependencies>

@@ -1,0 +1,3 @@
+white=com.zhao.dubbo.spi.service.impl.WhiteDogImpl
+black=com.zhao.dubbo.spi.service.impl.BlackDogImpl
+com.zhao.dubbo.spi.service.impl.DogAOPWapper
