@@ -1,9 +1,7 @@
 package com.zhao.provider.api;
 
 /**
- * @author tanghf
- * @className provider.api.HelloService.java
- * @createTime 2019/8/21 10:51
+ * @author zhao
  */
 public interface HelloService {
 

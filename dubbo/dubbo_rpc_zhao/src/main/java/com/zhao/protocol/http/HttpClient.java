@@ -1,4 +1,4 @@
-package com.zhao.protocal.http;
+package com.zhao.protocol.http;
 
 import com.zhao.framework.Invocation;
 import org.apache.commons.io.IOUtils;
@@ -9,9 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * @author tanghf
- * @className protocal.http.HttpClient.java
- * @createTime 2019/8/21 14:22
+ * @author zhao
  */
 public class HttpClient {
 

@@ -1,6 +1,5 @@
-package com.zhao.protocal.http;
+package com.zhao.protocol.http;
 
-import org.apache.catalina.Engine;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Server;
 import org.apache.catalina.Service;
@@ -11,9 +10,7 @@ import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Tomcat;
 
 /**
- * @author tanghf
- * @className protocal.http.HttpServer.java
- * @createTime 2019/8/20 09:13
+ * @author zhao
  */
 public class HttpServer {
 

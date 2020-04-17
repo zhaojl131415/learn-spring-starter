@@ -1,4 +1,4 @@
-package com.zhao.protocal.dubbo;
+package com.zhao.protocol.dubbo;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -11,12 +11,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-import java.util.logging.SocketHandler;
-
 /**
- * @author tanghf
- * @className protocal.dubbo.NettyServer.java
- * @createTime 2019/8/22 16:17
+ * @author zhao
  */
 public class NettyServer {
 

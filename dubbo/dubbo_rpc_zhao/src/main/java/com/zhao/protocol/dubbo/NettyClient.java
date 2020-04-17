@@ -1,4 +1,4 @@
-package com.zhao.protocal.dubbo;
+package com.zhao.protocol.dubbo;
 
 import com.zhao.framework.Invocation;
 import io.netty.bootstrap.Bootstrap;
@@ -15,9 +15,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import java.util.concurrent.*;
 
 /**
- * @author tanghf
- * @className protocal.dubbo.NettyClient.java
- * @createTime 2019/8/23 10:22
+ * @author zhao
  */
 public class NettyClient<T> {
 
@@ -44,7 +42,7 @@ public class NettyClient<T> {
                     }
                 });
         try {
-            b.connect("localhost", 8080).sync();
+            b.connect(hostname, port).sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

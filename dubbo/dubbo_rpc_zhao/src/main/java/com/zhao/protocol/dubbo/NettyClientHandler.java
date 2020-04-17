@@ -1,7 +1,6 @@
-package com.zhao.protocal.dubbo;
+package com.zhao.protocol.dubbo;
 
 import com.zhao.framework.Invocation;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.Future;
@@ -9,9 +8,7 @@ import io.netty.util.concurrent.Future;
 import java.util.concurrent.Callable;
 
 /**
- * @author tanghf
- * @className protocal.dubbo.NettyClientHandler.java
- * @createTime 2019/8/23 10:22
+ * @author zhao
  */
 public class NettyClientHandler extends ChannelInboundHandlerAdapter implements Callable{
 
@@ -25,6 +22,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter implements 
     public void setInvocation(Invocation invocation) {
         this.invocation = invocation;
     }
+
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {

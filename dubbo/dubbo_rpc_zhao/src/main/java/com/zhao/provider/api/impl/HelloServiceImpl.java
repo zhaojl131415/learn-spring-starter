@@ -1,12 +1,10 @@
-package com.zhao.provider.impl;
+package com.zhao.provider.api.impl;
 
 
 import com.zhao.provider.api.HelloService;
 
 /**
- * @author tanghf
- * @className provider.impl.HelloServiceImpl.java
- * @createTime 2019/8/21 10:52
+ * @author zhao
  */
 public class HelloServiceImpl implements HelloService {
     @Override

@@ -7,30 +7,33 @@ import java.io.*;
 import java.util.*;
 
 /**
- * @author tanghf
- * @className register.RemoteRegister.java
- * @createTime 2019/8/21 11:37
+ * 注册中心
+ * @author zhao
  */
 public class RemoteRegister {
 
     private static Map<String, List<URL>> REGISTER = new HashMap<>();
 
+    // 服务注册
     public static void register(String interfaceName, URL url) {
         List<URL> urls = Collections.singletonList(url);
         REGISTER.put(interfaceName, urls);
         saveFile();
     }
 
+    // 服务获取
     public static List<URL> get(String interfaceName){
         return getFile().get(interfaceName);
     }
 
+    // 负载均衡：随机算法
     public static URL getRandom(String interfaceName){
         List<URL> urls = RemoteRegister.get(interfaceName);
         int i = new Random().nextInt(urls.size());
         return urls.get(i);
     }
 
+    // 服务注册写入文件
     private static void saveFile(){
         try {
             FileOutputStream fos = new FileOutputStream("/temp.txt");
@@ -43,6 +46,7 @@ public class RemoteRegister {
         }
     }
 
+    // 从文件中读取注册的服务
     private static Map<String, List<URL>> getFile(){
         try {
             FileInputStream fis = new FileInputStream("/temp.txt");

@@ -1,4 +1,4 @@
-package com.zhao.protocal.http;
+package com.zhao.protocol.http;
 
 import com.zhao.framework.Invocation;
 import com.zhao.provider.LocalRegister;
@@ -13,9 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * @author tanghf
- * @className protocal.http.HttpServletHandler.java
- * @createTime 2019/8/21 10:40
+ * @author zhao
  */
 public class HttpServletHandler {
 
