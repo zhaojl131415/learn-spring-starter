@@ -19,20 +19,20 @@ import java.lang.reflect.Proxy;
 
 public class ClientRpcProxy {
 
-    public static Object create(Class clazz){
+    public static Object create(Class clazz) {
         return Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-                ClassInfo classInfo=new ClassInfo();
+                ClassInfo classInfo = new ClassInfo();
                 classInfo.setClassName(clazz.getName());
                 classInfo.setMethodName(method.getName());
                 classInfo.setArgs(args);
                 classInfo.setClazzType(method.getParameterTypes());
 
-                EventLoopGroup eventExecutors=new NioEventLoopGroup();    //创建一个线程组
+                EventLoopGroup eventExecutors = new NioEventLoopGroup();    //创建一个线程组
                 //创建客户端启动助手  完成相关配置
-                Bootstrap bootstrap=new Bootstrap();
+                Bootstrap bootstrap = new Bootstrap();
                 //创建业务处理类
                 ClientSocketNettyHandler nettyClientHendler = new ClientSocketNettyHandler();
                 try {
@@ -43,14 +43,14 @@ public class ClientRpcProxy {
                                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                                     ChannelPipeline pipeline = socketChannel.pipeline();
                                     //添加编码器
-                                    pipeline.addLast("encoder",new ObjectEncoder());
+                                    pipeline.addLast("encoder", new ObjectEncoder());
 
                                     //添加解码器
                                     //maxObjectSize:序列化的对象的最大长度，一旦接收到的对象长度大于此值，抛出StreamCorruptedException异常
                                     //classResolver：这个类（ClassResolver）会去加载已序列化的对象，
                                     //常用调用方式：ClassResolvers.cacheDisabled(Plan.class.getClassLoader())
                                     //或者直接ClassResolvers.cacheDisabled(null)
-                                    pipeline.addLast("decoder",new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));//
+                                    pipeline.addLast("decoder", new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));//
                                     //将自己编写的客户端业务逻辑处理类加入到pipeline链中
                                     pipeline.addLast(nettyClientHendler);
                                 }
@@ -62,7 +62,7 @@ public class ClientRpcProxy {
                     //关闭连接  异步非阻塞
                     // 这里因为调用了.sync()，是同步的，会阻塞，只有当客户端关闭才会执行通过，执行后续代码
                     future.channel().closeFuture().sync();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return nettyClientHendler.getResponse();

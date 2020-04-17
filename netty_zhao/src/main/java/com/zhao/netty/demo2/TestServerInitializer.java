@@ -45,8 +45,9 @@ public class TestServerInitializer extends ChannelInitializer<SocketChannel> {
         // 5、SimpleChannelInboundHandler
         pipeline.addLast(new TestServerHandler());
 
-        // 入栈执行顺序 head 1 3 5
-        // 出栈执行顺序 tail 4 2
+        // 往pipeline添加的顺序为 head 1 2 3 4 5 tail
+        // 入栈只执行Inbound，执行顺序正序从head开始：head 1 3 5
+        // 出栈只执行Outbound，执行顺序倒序从tail开始：tail 4 2
 
 
     }

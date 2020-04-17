@@ -1,4 +1,4 @@
-package com.zhao.netty.sixdome;
+package com.zhao.netty.demo6;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

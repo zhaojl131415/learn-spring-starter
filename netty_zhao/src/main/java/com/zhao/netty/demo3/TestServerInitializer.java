@@ -16,6 +16,9 @@ public class TestServerInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = socketChannel.pipeline();
         // ChannelInboundHandlerAdapter
         // 基于分隔符的解码器：通过\r\n、\n来解决粘包拆包的问题
+        /**
+         * @see DelimiterBasedFrameDecoder#isLineBased(io.netty.buffer.ByteBuf[])
+         */
         pipeline.addLast(new DelimiterBasedFrameDecoder(4096, Delimiters.lineDelimiter()));
         pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
         pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));

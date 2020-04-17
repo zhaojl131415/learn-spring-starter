@@ -21,7 +21,7 @@ public class TestClientHandler extends SimpleChannelInboundHandler<String> {
         }
     }
 
-    //有异常发生
+    //有异常发生，关闭通道
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();

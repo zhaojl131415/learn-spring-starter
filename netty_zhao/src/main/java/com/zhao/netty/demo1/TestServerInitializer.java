@@ -12,7 +12,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
    HttpResponseDecoder，将ByteBuf解码成HttpResponse和HttpContent
  */
 /**
- * ChannelInitializer   特殊的Handler：
+ * ChannelInitializer   特殊的Handler：辅助添加Handler
  * 辅助添加自定义的Handler，服务启动后调用initChannel方法，把自定义的handler添加到pipeline里，然后从pipiline中移除自己
  */
 public class TestServerInitializer extends ChannelInitializer<SocketChannel> {
