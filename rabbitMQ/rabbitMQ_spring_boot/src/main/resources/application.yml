@@ -1,0 +1,14 @@
+spring:
+  rabbitmq:
+    host: 192.168.100.70
+    port: 5672
+    username: admin
+    password: admin
+#    publisher-confirms: true # 开启发送方确认模式
+    publisher-confirm-type: correlated  # 开启发送方确认模式, publisher-confirms过期了, 用这个替代
+    publisher-returns: true # 开启失败回调
+    template:
+      mandatory: true # 开启mandatory模式（开启失败回调）
+    listener:
+      direct:
+        acknowledge-mode: manual
