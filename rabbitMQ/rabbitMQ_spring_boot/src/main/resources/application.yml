@@ -1,5 +1,6 @@
 spring:
   rabbitmq:
+#    addresses: 192.168.100.70:5672,192.168.100.71:5672,192.168.100.72:5672
     host: 192.168.100.70
     port: 5672
     username: admin
