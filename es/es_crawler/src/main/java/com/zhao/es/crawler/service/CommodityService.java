@@ -1,19 +1,20 @@
 package com.zhao.es.crawler.service;
 
 import com.alibaba.fastjson.JSON;
+import com.zhao.es.crawler.DTO.ScrollDTO;
 import com.zhao.es.crawler.entity.Commodity;
 import com.zhao.es.crawler.util.JsoupUtil;
 import org.apache.lucene.util.QueryBuilder;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.*;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -22,6 +23,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.naming.directory.SearchResult;
 import java.io.IOException;
@@ -36,7 +38,7 @@ import java.util.stream.Collectors;
 public class CommodityService {
 
     @Autowired
-    private RestHighLevelClient client;
+    private RestHighLevelClient restHighLevelClient;
 
     /**
      * 1、从jd爬取数据解析后放入es
@@ -52,7 +54,7 @@ public class CommodityService {
                 bulkRequest.add(new IndexRequest("commodity").source(JSON.toJSONString(commodity), XContentType.JSON));
             }
 
-            BulkResponse response = client.bulk(bulkRequest, RequestOptions.DEFAULT);
+            BulkResponse response = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
             System.out.println(response.hasFailures());
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,21 +68,52 @@ public class CommodityService {
         List<Map<String, Object>> list = new ArrayList<>();
         try {
             // 执行查询请求
-            SearchRequest searchRequest = getSearchRequest(keyword, pageNo, pageSize, isHighlight);
-            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+            SearchResponse response = getResponse(keyword, pageNo, pageSize, isHighlight);
 
             // 解析结果
 //            for (SearchHit hit : response.getHits().getHits()) {
 //                list.add(getSourceAsMap(hit, isHighlight));
 //            }
             list = Arrays.stream(response.getHits().getHits()).map(h -> getSourceAsMap(h, isHighlight)).collect(Collectors.toList());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
 
-    private SearchRequest getSearchRequest(String keyword, int pageNo, int pageSize, boolean isHighlight) {
+    /**
+     * 搜索
+     */
+    public ScrollDTO searchScroll(String keyword, String scrollId, int size) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        try {
+            String[] includes = new String[]{"name", "price", "shop"};
+            String indices = "commodity";
+            // 精准匹配
+//            TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("name", keyword);
+            BoolQueryBuilder boolQueryBuilder = StringUtils.isEmpty(keyword) ? null :
+                    QueryBuilders.boolQuery().must(QueryBuilders.termQuery("name", keyword));
+
+            SearchResponse response = getResponse(boolQueryBuilder, indices, includes, null, size);
+            if (response != null) {
+                scrollId = response.getScrollId();
+                list = Arrays.stream(response.getHits().getHits()).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
+            }
+
+            if(scrollId != null){
+                //清除滚屏
+                ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
+                //也可以选择setScrollIds()将多个scrollId一起使用
+                clearScrollRequest.addScrollId(scrollId);
+                restHighLevelClient.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ScrollDTO(scrollId, list);
+    }
+
+    private SearchResponse getResponse(String keyword, int pageNo, int pageSize, boolean isHighlight) throws Exception {
         pageNo = pageNo < 1 ? 1 : pageNo;
         // 精准匹配
         TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("name", keyword);
@@ -105,8 +138,10 @@ public class CommodityService {
         // 构建查询请求
         SearchRequest searchRequest = new SearchRequest("commodity");
         searchRequest.source(searchSourceBuilder);
-        return searchRequest;
+
+        return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
     }
+
 
     public Map<String, Object> getSourceAsMap(SearchHit hit, boolean isHighlight) {
         // 查询结果Map
@@ -130,5 +165,31 @@ public class CommodityService {
         }
 
         return sourceAsMap;
+    }
+
+    private SearchResponse getResponse(BoolQueryBuilder queryBuilder, String indices, String[] includes, String scrollId, int size) throws Exception {
+        if (queryBuilder == null && scrollId != null) {
+            SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId).scroll(TimeValue.MINUS_ONE);
+            return restHighLevelClient.scroll(searchScrollRequest, RequestOptions.DEFAULT);
+        } else {
+            // 构建查询条件
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+            searchSourceBuilder.query(queryBuilder);
+            searchSourceBuilder.size(size);
+            //传了查询过滤字段才过滤结果，否则取全部字段
+            if (includes != null && includes.length > 0) {
+                //设置要获取的字段和不要获取的字段
+                searchSourceBuilder.fetchSource(includes, new String[]{});
+            }
+            searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+
+            // 构建查询请求
+            SearchRequest searchRequest = new SearchRequest().indices(indices).source(searchSourceBuilder);
+            //size 为0不能使用scroll，否则会抛异常
+            if (size != 0) {
+                searchRequest.scroll(TimeValue.MINUS_ONE);
+            }
+            return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        }
     }
 }

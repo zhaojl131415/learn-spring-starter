@@ -4,7 +4,7 @@ import lombok.*;
 import org.elasticsearch.index.VersionType;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = "commodity", type = "_doc", shards = 5, replicas = 2, createIndex = false, useServerConfiguration = true, versionType = VersionType.EXTERNAL)
+@Document(indexName = "commodity")
 @Setter
 @Getter
 @NoArgsConstructor

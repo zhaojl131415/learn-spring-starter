@@ -12,16 +12,23 @@ import java.util.List;
 
 public class JsoupUtil {
 
-    public static List<Commodity> parse(String keyword) throws  Exception{
+    public static List<Commodity> parse(String keyword) throws  Exception {
+
         List<Commodity> list = new ArrayList<>();
 
-        String url = "https://search.jd.com/Search?keyword=" + keyword;
+        for (int i = 1; i <= 10; i++) {
+            list.addAll(parsePage(keyword, i));
+        }
+        return list;
+    }
+
+    private static List<Commodity> parsePage(String keyword, int page) throws  Exception {
+        List<Commodity> list = new ArrayList<>();
+        String url = "https://search.jd.com/Search?keyword=" + keyword + "&page=" + page;
         Document document = Jsoup.parse(new URL(url), 3000);
 
         Element jGoodsList = document.getElementById("J_goodsList");
-
         Elements elements = jGoodsList.getElementsByTag("li");
-
 
         for (Element element : elements) {
             String image = element.getElementsByTag("img").eq(0).attr("src"); // source-data-lazy-img
