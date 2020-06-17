@@ -19,25 +19,25 @@ import java.net.UnknownHostException;
 @Configuration
 public class TransportClientConfig extends ElasticsearchConfigurationSupport {
 
-  @Bean
-  public Client elasticsearchClient() throws UnknownHostException {
-    Settings settings = Settings.builder().put("cluster.name", "zhao").build();
-    TransportClient client = new PreBuiltTransportClient(settings);
-    client.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.100.60"), 9300));
-    return client;
-  }
+    @Bean
+    public Client elasticsearchClient() throws UnknownHostException {
+        Settings settings = Settings.builder().put("cluster.name", "zhao").build();
+        TransportClient client = new PreBuiltTransportClient(settings);
+        client.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.100.60"), 9300));
+        return client;
+    }
 
-  @Bean(name = {"elasticsearchOperations", "elasticsearchTemplate"})
-  public ElasticsearchTemplate elasticsearchTemplate() throws UnknownHostException {
-      return new ElasticsearchTemplate(elasticsearchClient(), entityMapper());
-  }
+    @Bean(name = {"elasticsearchOperations", "elasticsearchTemplate"})
+    public ElasticsearchTemplate elasticsearchTemplate() throws UnknownHostException {
+        return new ElasticsearchTemplate(elasticsearchClient(), entityMapper());
+    }
 
-  @Bean
-  @Override
-  public EntityMapper entityMapper() {
-    ElasticsearchEntityMapper entityMapper = new ElasticsearchEntityMapper(elasticsearchMappingContext(),
-  	  new DefaultConversionService());
-    entityMapper.setConversions(elasticsearchCustomConversions());
-    return entityMapper;
-  }
+    @Bean
+    @Override
+    public EntityMapper entityMapper() {
+        ElasticsearchEntityMapper entityMapper = new ElasticsearchEntityMapper(elasticsearchMappingContext(),
+                new DefaultConversionService());
+        entityMapper.setConversions(elasticsearchCustomConversions());
+        return entityMapper;
+    }
 }

@@ -23,6 +23,7 @@
 
     <modules>
         <module>es_spring_boot</module>
+        <module>es_crawler</module>
     </modules>
 
     <properties>
