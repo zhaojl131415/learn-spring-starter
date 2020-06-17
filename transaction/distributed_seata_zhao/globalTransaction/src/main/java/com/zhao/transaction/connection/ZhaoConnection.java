@@ -30,6 +30,7 @@ public class ZhaoConnection implements Connection {
 
     @Override
     public void commit() throws SQLException {
+        // 这里应该维护一个线程池来实现，而不是每次都新建一个线程
         // 要提交的时候先不提交，等TxManager的通知再提交
         new Thread(() -> {
             try {
