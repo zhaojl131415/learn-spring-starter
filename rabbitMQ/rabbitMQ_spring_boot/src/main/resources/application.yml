@@ -1,14 +1,34 @@
 spring:
   rabbitmq:
+#    addresses: 192.168.100.70:5672,192.168.100.71:5672,192.168.100.72:5672
     host: 192.168.100.70
     port: 5672
     username: admin
     password: admin
+    connection-timeout: 15000 #连接超时时间
 #    publisher-confirms: true # 开启发送方确认模式
     publisher-confirm-type: correlated  # 开启发送方确认模式, publisher-confirms过期了, 用这个替代
     publisher-returns: true # 开启失败回调
     template:
       mandatory: true # 开启mandatory模式（开启失败回调）
     listener:
-      direct:
-        acknowledge-mode: manual
+#      direct:
+#        acknowledge-mode: manual # 手动签收
+#        prefetch: 10 # 设置消息预取的数量: channel.basicQos(10);
+#        default-requeue-rejected: true # 重试次数超过上面的设置之后是否丢弃（false不丢弃时需要写相应代码将该消息加入死信队列）
+#        retry:
+#          enabled: true # 开启重试机制
+#          max-attempts: 5 # 重试次数
+#          initial-interval: 2000ms # 每次重试时间间隔2s
+#          max-interval: 5000ms  # 最大重试时间间隔
+#          multiplier: 2 #下次尝试时间间隔是上次时间间隔的倍数(尝试时间间隔为2s,2s*2,2s*2*2......)
+      simple:
+        acknowledge-mode: manual # 手动签收
+        prefetch: 10 # 设置消息预取的数量: channel.basicQos(10);
+        default-requeue-rejected: true # 重试次数超过上面的设置之后是否丢弃（false不丢弃时需要写相应代码将该消息加入死信队列）
+        retry:
+          enabled: true # 开启重试机制
+          max-attempts: 5 # 重试次数
+          initial-interval: 2000ms # 每次重试时间间隔2s
+          max-interval: 5000ms  # 最大重试时间间隔
+          multiplier: 2 #下次尝试时间间隔是上次时间间隔的倍数(尝试时间间隔为2s,2s*2,2s*2*2......)
