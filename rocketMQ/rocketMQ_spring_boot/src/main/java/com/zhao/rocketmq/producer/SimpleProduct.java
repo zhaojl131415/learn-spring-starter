@@ -1,6 +1,7 @@
 package com.zhao.rocketmq.producer;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 
@@ -15,6 +16,8 @@ public class SimpleProduct {
                 DefaultMQProducer("test");
         // Specify name server addresses.
         producer.setNamesrvAddr("192.168.100.70:9876");
+        producer.setVipChannelEnabled(false);
+        producer.setSendMsgTimeout(10000);
         //Launch the instance.
         producer.start();
         List<Message> list = new ArrayList<Message>();
@@ -26,7 +29,20 @@ public class SimpleProduct {
             );
             msg.putUserProperty("i",i+"");
 
-            //一次发送1条 发送i次
+
+//            producer.send(msg, new SendCallback() {
+//                @Override
+//                public void onSuccess(SendResult sendResult) {
+//                    //
+//                }
+//
+//                @Override
+//                public void onException(Throwable e) {
+//                    e.printStackTrace();
+//                }
+//            }, 20 * 1000);
+
+//            //一次发送1条 发送i次
             SendResult sendResult = producer.send(msg);
             System.out.println(sendResult);
 //            list.add(msg);

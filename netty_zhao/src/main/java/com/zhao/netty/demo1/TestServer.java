@@ -16,7 +16,7 @@ public class TestServer {
             serverBootstrap.group(bossGroup,workGroup)
                     //服务端用的通道
                     .channel(NioServerSocketChannel.class)
-                    // 处理器： 对于服务端
+                    // 处理器： 服务端
                     // .handler()
                     //处理器： 已经连接上来的客户端
                     .childHandler(new TestServerInitializer());

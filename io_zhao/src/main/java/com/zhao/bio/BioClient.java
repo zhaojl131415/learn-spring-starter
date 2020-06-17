@@ -21,6 +21,10 @@ public class BioClient {
         try {
             socket = new Socket("localhost", 9090);
 
+            /**
+             * 开线程, 循环读
+             * @see BioClientHandler#run()
+             */
             new Thread(new BioClientHandler(socket)).start();
             os = socket.getOutputStream();
 

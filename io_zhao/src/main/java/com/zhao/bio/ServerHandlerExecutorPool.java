@@ -13,8 +13,7 @@ public class ServerHandlerExecutorPool implements Executor {
     private ExecutorService executorService;
 
     public ServerHandlerExecutorPool(int maxPoolSize, int queueSize) {
-        this.executorService = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
-                maxPoolSize, 120L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(queueSize));
+        this(Runtime.getRuntime().availableProcessors(), maxPoolSize, queueSize);
     }
 
     public ServerHandlerExecutorPool(int corePoolSize, int maxPoolSize, int queueSize) {

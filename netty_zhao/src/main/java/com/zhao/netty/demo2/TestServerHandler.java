@@ -12,6 +12,7 @@ public class TestServerHandler extends SimpleChannelInboundHandler<String>{
         channelHandlerContext.writeAndFlush("form server"+ UUID.randomUUID());
     }
 
+    // 有异常发生，关闭通道
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();

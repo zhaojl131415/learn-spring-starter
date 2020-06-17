@@ -19,7 +19,7 @@ public class TCPHandler implements Runnable {
     public TCPHandler(SelectionKey sk, SocketChannel sc) {
         this.sk = sk;
         this.sc = sc;
-        // 初始状态设置为 READING
+        // 初始状态设置为 READ
         state = 0;
     }
 
@@ -70,7 +70,7 @@ public class TCPHandler implements Runnable {
                     + " > " + str);
             // 改变状态
             state = 1;
-            // 通过key改变通道注册的事件为OP_WRITE
+            // 通过key改变通道注册的事件为OP_WRITE, 实际开发中基本上不用这种方式写回数据, 可直接通过sc.write()写
             sk.interestOps(SelectionKey.OP_WRITE);
             // 使一个阻塞住的selector操作立即返回
             sk.selector().wakeup();

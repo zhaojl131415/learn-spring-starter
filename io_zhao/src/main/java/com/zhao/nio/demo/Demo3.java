@@ -20,7 +20,7 @@ public class Demo3 {
         byte[] bytes = "zhao jin liang".getBytes();
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-
+        // 写入buffer
         buffer.put(bytes);
 
         buffer.flip();

@@ -33,9 +33,9 @@ public class ProxyFactory {
 //                    Protocol protocol = ProtocolFactory.getProtocol("netty");
 //                    return protocol.send(url, invocation);
 
-                    HttpClient httpClient = new HttpClient();
-//                    NettyClient httpClient = new NettyClient<>();
-                    return httpClient.send(url.getHostname(), url.getPort(), invocation);
+//                    HttpClient client = new HttpClient();
+                    NettyClient client = new NettyClient<>();
+                    return client.send(url.getHostname(), url.getPort(), invocation);
                 });
     }
 }

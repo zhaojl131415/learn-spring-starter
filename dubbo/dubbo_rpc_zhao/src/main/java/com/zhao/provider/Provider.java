@@ -36,9 +36,9 @@ public class Provider {
 //        Protocol protocol = ProtocolFactory.getProtocol("netty");
 //        protocol.start(url);
 
-        HttpServer httpServer = new HttpServer();
-//        NettyServer httpServer = new NettyServer();
-        httpServer.start("127.0.0.1", 8080);
+//        HttpServer server = new HttpServer();
+        NettyServer server = new NettyServer();
+        server.start("127.0.0.1", 8080);
 
 
 

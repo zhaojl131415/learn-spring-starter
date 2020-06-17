@@ -29,7 +29,8 @@ public class Acceptor implements Runnable {
                 sc.configureBlocking(false);
                 // SocketChannel向selector注册一个OP_READ事件，然后返回该通道的key
                 SelectionKey sk = sc.register(selector, SelectionKey.OP_READ);
-                // 使一个阻塞住的selector操作, 立即返回
+                // 使一个阻塞住的selector操作, 立即返回,
+                // 执行到此处时selector并不是阻塞的, 这里调用wakeup是指当循环调用下一次select()时不阻塞
                 selector.wakeup();
                 // 给定key一个附加对象: TCPHandler
                 sk.attach(new TCPHandler(sk, sc));

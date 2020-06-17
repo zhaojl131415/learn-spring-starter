@@ -3,6 +3,8 @@ package com.zhao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author zhaojinliang
@@ -19,13 +21,45 @@ public class OutOfMemoryDeomo {
      * -Xmx10m -Xms10m -XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:./g1-gc.log
      */
     public static void main(String[] args) {
-        List<Object> list = new ArrayList<Object>();
-        int i = 0, j = 0;
-        while (true) {
-            list.add(new User(i++, UUID.randomUUID().toString()));
-            new User(j--, UUID.randomUUID().toString());
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+
+        for (int i = 0; i < 50; i++) {
+            new Thread(() -> {
+                byte[] bytes = new byte[10240];
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                new String(bytes);
+            }).start();
         }
+
+        while (true) {
+//            executorService.submit(() -> {
+//
+//                byte[] bytes = new byte[1024];
+////                try {
+////                    Thread.sleep(2000);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+//                new String(bytes);
+//            });
+
+            System.out.println("1111");
+//            try {
+//                Thread.sleep(200);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+        }
+
+
+
     }
+
+
 }
 
 class User {

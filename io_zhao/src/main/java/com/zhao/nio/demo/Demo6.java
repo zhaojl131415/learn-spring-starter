@@ -12,7 +12,7 @@ public class Demo6 {
 //        byteBuffer.mark();
         byteBuffer.position(2);
         byteBuffer.limit(8);
-        // 复制一个从2-8的长度为6的新ByteBuffer, 内容是原byteBuffer的引用
+        // 复制一个从2-8的长度为6的新ByteBuffer, 内容是原byteBuffer的引用, 改变这个buffer的内容, 会影响原buffer的内容
         // 2 3 4 5 6 7
         ByteBuffer resetBuffer = byteBuffer.slice();
         for(int i=0;i<resetBuffer.capacity();i++){

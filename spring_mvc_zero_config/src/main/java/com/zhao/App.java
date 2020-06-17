@@ -38,6 +38,7 @@ public class App {
 //        System.out.println(tomcat.getServer());
 //        System.out.println(tomcat.getConnector());
 
+        // 阻塞. 不然main方法结束
         tomcat.getServer().await();
     }
 }

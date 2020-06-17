@@ -60,13 +60,16 @@ public class TCPReactor implements Runnable {
      * @param key
      */
     private void dispatch(SelectionKey key) {
-        // 根据事件key绑定的附加对象: new Acceptor(selector, ssc)
+        // 根据事件key绑定的附加对象:
+        // new Acceptor(selector, ssc) / new TCPHandler(sk, sc)
         // 这里没有开启新线程, 也还是普通的方法调用
         Runnable r = (Runnable) (key.attachment());
         if (r != null) {
-            // OP_ACCEPT: com.zhao.nio.reactor.single.Acceptor.run
-            // OP_READ: com.zhao.nio.reactor.single.TCPHandler.run
-            // OP_WRITE: com.zhao.nio.reactor.single.TCPHandler.run
+            /**
+             * OP_ACCEPT: {@link Acceptor#run()}
+             * OP_READ: {@link TCPHandler#run()}
+             * OP_WRITE: {@link TCPHandler#run()}
+             */
             r.run();
         }
     }

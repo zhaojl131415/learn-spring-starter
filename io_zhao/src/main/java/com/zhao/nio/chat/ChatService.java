@@ -44,6 +44,7 @@ public class ChatService {
     }
 
     public void start() throws Exception {
+        // 用于存储空轮询次数
         int count = 0;
         long start = System.nanoTime();
         //干活
@@ -55,15 +56,18 @@ public class ChatService {
 //            }
             // 这里如果没有指定timeout, 会阻塞, 直到有连接才会继续执行
             // timeout: 2000, 表示两秒轮询一次
+            // 这个方法有时候不会阻塞两秒, 有时候会失效,jdk中nio源码一个bug, netty也没有解决, 只是规避了这个bug
             selector.select(timeout);
 //            System.out.println("2秒了");
             long end = System.nanoTime();
+            // 如果发生了空轮询, 这里不成立, 走到else, 累加count
             if (end - start >= TimeUnit.MILLISECONDS.toNanos(timeout)) {
                 count = 1;
             } else {
                 count++;
             }
 
+            // 空轮询, 重建Selector
             if (count >= 10) {
                 System.out.println("有可能发生空轮询" + count + "次");
                 rebuildSelector();
@@ -72,7 +76,7 @@ public class ChatService {
                 selector.selectNow();
                 continue;
             }
-            // 得到SelectionKey对象集合，判断是什么事件
+            // 得到SelectionKey对象集合, 表示有多少个事件来连接了，SelectionKey判断是什么事件
             Set<SelectionKey> selectionKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
             while (iterator.hasNext()) {
@@ -106,7 +110,7 @@ public class ChatService {
         for (SelectionKey selectionKey : oldSelect.keys()) {
             // 获取附件
             Object att = selectionKey.attachment();
-            // 获取SelectionKey的事件: OP_ACCEPT/OP_READ等
+            // 获取SelectionKey的注册了哪些事件: OP_ACCEPT/OP_READ等
             int i = selectionKey.interestOps();
             // 取消
             selectionKey.cancel();
@@ -154,7 +158,7 @@ public class ChatService {
 
 
     public static void main(String[] args) throws Exception {
-        new ChatService().start();
+        new ChatService();
     }
 
 

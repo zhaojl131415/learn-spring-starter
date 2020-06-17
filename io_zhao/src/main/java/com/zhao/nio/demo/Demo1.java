@@ -1,5 +1,6 @@
 package com.zhao.nio.demo;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.IntBuffer;
 import java.security.SecureRandom;
 
@@ -12,6 +13,12 @@ import java.security.SecureRandom;
 public class Demo1 {
 
     public static void main(String[] args) {
+
+//        try {
+//            System.out.println("纵有疾风起，人生不言弃".getBytes("UTF-8").length);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
         // 实例化一个IntBuffer, 指定最大容量capacity和限制limit都为8. 堆内缓冲
         IntBuffer buffer = IntBuffer.allocate(8);
         // 遍历buffer最大容量

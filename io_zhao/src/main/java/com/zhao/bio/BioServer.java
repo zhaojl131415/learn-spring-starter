@@ -21,7 +21,7 @@ public class BioServer {
         try {
             serverSocket = new ServerSocket(9090);
             executorPool = new ServerHandlerExecutorPool(10, 100);
-            // 为了保证让main方法不会执行完: 长连接
+            // 为了保证让main方法不会执行完而结束: 长连接
             while(true) {
                 // 客户端socket: 这一步是阻塞的, 没有获取到客户端, 会一直阻塞在这
                 Socket socket = serverSocket.accept();
@@ -30,6 +30,9 @@ public class BioServer {
 
 //                new Thread(new BioServerHandler(socket)).start();
 
+                /**
+                 * @see BioServerHandler#run()
+                 */
                 executorPool.execute(new BioServerHandler(socket));
             }
 

@@ -30,6 +30,10 @@
         <module>es</module>
         <module>rabbitMQ</module>
         <module>rocketMQ</module>
+        <module>zookeeper</module>
+        <module>spring_cloud</module>
+        <module>mybatis</module>
+        <module>mybatis</module>
     </modules>
 
     <dependencies>

@@ -20,12 +20,22 @@ public class SyncBlockDemo {
         int syncResult = syncMethod(1, 2);
         System.out.println("基于同步阻塞:"+syncResult);
 
-        // 异步: 回调
+        // 异步阻塞: 回调
         int asyncResult = asyncMethod((a,b) -> {
             int c = a + b;
             return c;
         },1, 2);
-        System.out.println("基于异步阻塞:"+asyncResult);
+        System.out.println("基于异步阻塞1:"+asyncResult);
+
+        // 异步阻塞: 回调
+        Async async = new Async();
+        asyncMethod2(async, 1, 2);
+        System.out.println("基于异步阻塞2:"+async.getReturnValue());
+
+        // 异步非阻塞
+        Async async2 = new Async();
+        new Thread(() -> asyncMethod2(async, 1, 2)).start();
+        System.out.println("基于异步非阻塞:"+async2.getReturnValue());
 
 
     }
@@ -39,8 +49,9 @@ public class SyncBlockDemo {
         return async.callback(a,b);
     }
 
-    public static int asyncMethod2(AsyncInterface async, int a, int b){
-        return async.callback(a,b);
+    public static void asyncMethod2(Async async, int a, int b){
+        async.setReturnValue(a+b);
+        async.setFlag(true);
     }
 
 
@@ -49,10 +60,23 @@ public class SyncBlockDemo {
     }
 
 
+
     static class Async {
 
         private Object returnValue;
         private Boolean flag;
+
+        public void setReturnValue(Object returnValue) {
+            this.returnValue = returnValue;
+        }
+
+        public Boolean getFlag() {
+            return flag;
+        }
+
+        public void setFlag(Boolean flag) {
+            this.flag = flag;
+        }
 
         public Object getReturnValue() {
             return flag ? returnValue : null;

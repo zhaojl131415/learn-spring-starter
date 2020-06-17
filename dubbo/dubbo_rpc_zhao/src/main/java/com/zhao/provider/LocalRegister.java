@@ -8,6 +8,7 @@ import java.util.Map;
  */
 public class LocalRegister {
 
+    // <接口名,实现类>
     private static Map<String, Class> LOCALREGISTER = new HashMap<>();
 
     public static void register(String interfaceName, Class interfaceImpl){

@@ -18,7 +18,8 @@ public class HttpServer {
 
         /**
          * Tomcat容器层次关系
-         * Tomcat -> Server -> Service -> Connector/Engine -> Host -> Content*/
+         * Tomcat -> Server -> Service -> Connector/Engine -> Host -> Content
+         */
         Tomcat tomcat = new Tomcat();
         Server server = tomcat.getServer();
         Service service = server.findService("Tomcat");

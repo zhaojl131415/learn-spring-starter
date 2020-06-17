@@ -1,19 +1,7 @@
 package com.zhao.rocketmq;
 
-import com.zhao.rocketmq.entity.OrderPaidEvent;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.apache.rocketmq.client.producer.SendCallback;
-import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.messaging.support.MessageBuilder;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
 
 @SpringBootApplication
 public class RocketMQSpringBootApplication {

@@ -20,9 +20,11 @@ public class Demo2 {
         // channel读取的数据放入buffer
         channel.read(buffer);
         buffer.flip();
-        while (buffer.remaining() > 0) {
-            System.out.println((char)buffer.get());
-        }
+        // (limit - position) > 0
+//        while (buffer.remaining() > 0) {
+//            System.out.println((char)buffer.get());
+//        }
+        System.out.println(new String(buffer.array()));
         fis.close();
     }
 }

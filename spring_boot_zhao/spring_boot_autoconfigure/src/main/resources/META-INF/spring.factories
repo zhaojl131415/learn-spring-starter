@@ -1,0 +1,3 @@
+# Auto Configure
+com.zhao.spring.boot.autoconfigure.config.ZhaoEnableAutoConfiguration=\
+com.zhao.spring.boot.autoconfigure.entity.Role
