@@ -168,8 +168,10 @@ public class CommodityService {
     }
 
     private SearchResponse getResponse(BoolQueryBuilder queryBuilder, String indices, String[] includes, String scrollId, int size) throws Exception {
+        TimeValue timeValue = TimeValue.timeValueMinutes(1L);
+
         if (queryBuilder == null && scrollId != null) {
-            SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId).scroll(TimeValue.MINUS_ONE);
+            SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId).scroll(timeValue);
             return restHighLevelClient.scroll(searchScrollRequest, RequestOptions.DEFAULT);
         } else {
             // 构建查询条件
@@ -181,13 +183,13 @@ public class CommodityService {
                 //设置要获取的字段和不要获取的字段
                 searchSourceBuilder.fetchSource(includes, new String[]{});
             }
-            searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+            searchSourceBuilder.timeout(timeValue);
 
             // 构建查询请求
             SearchRequest searchRequest = new SearchRequest().indices(indices).source(searchSourceBuilder);
             //size 为0不能使用scroll，否则会抛异常
             if (size != 0) {
-                searchRequest.scroll(TimeValue.MINUS_ONE);
+                searchRequest.scroll(timeValue);
             }
             return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
         }

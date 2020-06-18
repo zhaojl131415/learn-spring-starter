@@ -1,7 +1,4 @@
-#spring:
-#  data:
-#    elasticsearch:
-#      cluster-name: es_cluster
-#      cluster-nodes: 192.168.100.90:9300,192.168.100.90:9301,192.168.100.90:9302
-
-#spring.elas.clu
+spring:
+  elasticsearch:
+    rest:
+      uris: http://192.168.100.90:9200,http://192.168.100.90:9201,http://192.168.100.90:9202

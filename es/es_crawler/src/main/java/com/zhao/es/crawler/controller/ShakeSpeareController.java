@@ -25,7 +25,7 @@ public class ShakeSpeareController {
     @GetMapping("/search_scroll")
     public ScrollDTO searchScroll(@RequestParam(value = "keyword", required = false) String keyword,
                                   @RequestParam(value = "scrollId", required = false) String scrollId,
-                                  @RequestParam("size") int size) {
+                                  @RequestParam(value = "size", required = false) Integer size) {
         return shakeSpeareService.searchScroll(keyword, scrollId, size);
     }
 }

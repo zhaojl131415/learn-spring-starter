@@ -1,7 +1,6 @@
 package com.zhao.es.crawler.entity;
 
 import lombok.*;
-import org.elasticsearch.index.VersionType;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @Document(indexName = "commodity")

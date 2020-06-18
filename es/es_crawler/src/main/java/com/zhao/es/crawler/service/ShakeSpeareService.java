@@ -14,6 +14,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class ShakeSpeareService {
     /**
      * 搜索
      */
-    public ScrollDTO searchScroll(String keyword, String scrollId, int size) {
+    public ScrollDTO searchScroll(String keyword, String scrollId, Integer size) {
         List<Map<String, Object>> list = new ArrayList<>();
         try {
             String[] includes = new String[]{"play_name", "line_number", "speaker", "text_entry"};
@@ -48,13 +49,14 @@ public class ShakeSpeareService {
             BoolQueryBuilder boolQueryBuilder = StringUtils.isEmpty(keyword) ? null :
                     QueryBuilders.boolQuery().must(QueryBuilders.termQuery("speaker", keyword));
 
-            SearchResponse response = getResponse(boolQueryBuilder, indices, includes, null, size);
+            SearchResponse response = getResponse(boolQueryBuilder, indices, includes, scrollId, size);
             if (response != null) {
                 scrollId = response.getScrollId();
                 list = Arrays.stream(response.getHits().getHits()).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
             }
 
-            if(scrollId != null){
+//            if(scrollId != null){
+            if(CollectionUtils.isEmpty(list)){
                 //清除滚屏
                 ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
                 //也可以选择setScrollIds()将多个scrollId一起使用
@@ -68,9 +70,10 @@ public class ShakeSpeareService {
     }
 
 
-    private SearchResponse getResponse(BoolQueryBuilder queryBuilder, String indices, String[] includes, String scrollId, int size) throws Exception {
-        if (queryBuilder == null && scrollId != null) {
-            SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId).scroll(TimeValue.MINUS_ONE);
+    private SearchResponse getResponse(BoolQueryBuilder queryBuilder, String indices, String[] includes, String scrollId, Integer size) throws Exception {
+        TimeValue timeValue = TimeValue.timeValueMinutes(1L);
+        if (queryBuilder == null && !StringUtils.isEmpty(scrollId)) {
+            SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId).scroll(timeValue);
             return restHighLevelClient.scroll(searchScrollRequest, RequestOptions.DEFAULT);
         } else {
             // 构建查询条件
@@ -82,13 +85,13 @@ public class ShakeSpeareService {
                 //设置要获取的字段和不要获取的字段
                 searchSourceBuilder.fetchSource(includes, new String[]{});
             }
-            searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+            searchSourceBuilder.timeout(timeValue);
 
             // 构建查询请求
             SearchRequest searchRequest = new SearchRequest().indices(indices).source(searchSourceBuilder);
             //size 为0不能使用scroll，否则会抛异常
             if (size != 0) {
-                searchRequest.scroll(TimeValue.MINUS_ONE);
+                searchRequest.scroll(timeValue);
             }
             return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
         }
