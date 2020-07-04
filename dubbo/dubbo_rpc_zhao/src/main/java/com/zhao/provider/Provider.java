@@ -27,8 +27,6 @@ public class Provider {
         URL url = new URL("127.0.0.1", 8080);
         RemoteRegister.register(HelloService.class.getName(), url);
 
-
-
         //3.启动
 //        Protocol protocol = new HttpProtocol();
 //        Protocol protocol = new NettyProtocol();
