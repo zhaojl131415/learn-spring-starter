@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @description TODO
  * @date 2020-03-23 20:07
  */
-@Component("/user.do")
+@Component("/com.zhao.seata.user.do")
 public class BeanNameController implements Controller {
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {

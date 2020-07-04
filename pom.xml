@@ -34,6 +34,7 @@
         <module>spring_cloud</module>
         <module>mybatis</module>
         <module>crawler</module>
+        <module>docker</module>
     </modules>
 
     <dependencies>

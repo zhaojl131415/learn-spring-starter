@@ -27,7 +27,7 @@ public class HelloController {
     @GetMapping(value = "/hi")
     @RequestScope
     public String sayHi() {
-        return "Hello " + applicationContext.getEnvironment().getProperty("nacos.user.name");
+        return "Hello " + applicationContext.getEnvironment().getProperty("nacos.com.zhao.seata.user.name");
     }
 
     @GetMapping(value = "/hello/{message}")

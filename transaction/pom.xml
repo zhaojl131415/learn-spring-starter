@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>distributed_seata_zhao</module>
+        <module>seata_spring_boot</module>
     </modules>
 
     <properties>

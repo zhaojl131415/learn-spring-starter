@@ -174,15 +174,15 @@ public class ZhaoDispatcherServlet extends HttpServlet {
                 doScan(f);
             }
         } else {
-            // filePath:/Users/zhaojinliang/Code/Source/test-mvc/target/classes/com/zhao/controller/DemoController.class
+            // filePath:/Users/zhaojinliang/Code/Source/test-mvc/target/classes/com/zhao/com.zhao.seata.stock.controller/DemoController.class
             String filePath = file.getPath();
             // 获取扫描到的文件后缀名
             String suffix = filePath.substring(filePath.lastIndexOf("."));
             // 如果为class文件
             if (suffix.equals(".class")) {
-                // 去掉根目录地址, 得到: com/zhao/controller/DemoController.class
+                // 去掉根目录地址, 得到: com/zhao/com.zhao.seata.stock.controller/DemoController.class
                 String classPath = filePath.replace(new File(projectPath).getPath() + File.separator, "");
-                // 替换/, 得到: com.zhao.controller.DemoController.class
+                // 替换/, 得到: com.zhao.com.zhao.seata.stock.controller.DemoController.class
                 classPath = classPath.replaceAll(File.separator, ".");
                 String className = classPath.substring(0, classPath.lastIndexOf("."));
                 try {

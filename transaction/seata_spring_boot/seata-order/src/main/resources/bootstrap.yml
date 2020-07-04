@@ -1,0 +1,24 @@
+seata:
+  enabled: true
+  application-id: seata-order
+  tx-service-group: my_test_tx_group
+#  enable-auto-data-source-proxy: true
+#  use-jdk-proxy: false
+  # 从nacos获取seata客户端的配置
+  config:
+    type: nacos
+    nacos:
+      namespace:
+      serverAddr: localhost:8848
+      group: SEATA_GROUP
+      userName: "nacos"
+      password: "nacos"
+  # 将seata客户端服务注册到nacos
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: localhost:8848
+      namespace:
+      userName: "nacos"
+      password: "nacos"

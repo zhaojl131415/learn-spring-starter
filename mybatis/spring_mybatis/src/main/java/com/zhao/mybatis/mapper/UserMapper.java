@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface UserMapper {
 
-	@ZhaoSelect("select * from user")
+	@ZhaoSelect("select * from com.zhao.seata.user")
 	public List<String> queryUser();
 
 }

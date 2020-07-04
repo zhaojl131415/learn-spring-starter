@@ -21,7 +21,7 @@ import java.util.Map;
 public class TestController {
 
     @RequestMapping("/test.do")
-    @ResponseBody                                                   //user 对象  Map
+    @ResponseBody                                                   //com.zhao.seata.user 对象  Map
     public Object test(@ZhaoArg Map map, HttpServletRequest request, HttpServletResponse response) {
         //拿当前登录用户的逻辑....
         System.out.println(map.toString());
