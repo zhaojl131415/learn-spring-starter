@@ -33,12 +33,12 @@ public class Provider {
 //        Protocol protocol = new HttpProtocol();
 //        Protocol protocol = new NettyProtocol();
 //      Protocol protocol = ProtocolFactory.getProtocol();
-//        Protocol protocol = ProtocolFactory.getProtocol("netty");
-//        protocol.start(url);
+        Protocol protocol = ProtocolFactory.getProtocol("netty");
+        protocol.start(url);
 
 //        HttpServer server = new HttpServer();
-        NettyServer server = new NettyServer();
-        server.start("127.0.0.1", 8080);
+//        NettyServer server = new NettyServer();
+//        server.start("127.0.0.1", 8080);
 
 
 

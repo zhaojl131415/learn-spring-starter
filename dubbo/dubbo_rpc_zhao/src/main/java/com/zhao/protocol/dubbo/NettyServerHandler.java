@@ -17,12 +17,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
         System.out.println("server: msg==>"+msg);
 
-        Class implClass = LocalRegister.get(invocation.getInterfaceName());
+        Class serviceImpl = LocalRegister.get(invocation.getInterfaceName());
 
-        Method method = implClass.getMethod(invocation.getMethodName(), invocation.getParamTypes());
-        Object invoke = method.invoke(implClass.newInstance(), invocation.getParams());
-        System.out.println("Netty===============" + invoke.toString());
-        ctx.writeAndFlush("Netty: " + invoke);
+        Method method = serviceImpl.getMethod(invocation.getMethodName(), invocation.getParamTypes());
+        Object result = method.invoke(serviceImpl.newInstance(), invocation.getParams());
+        System.out.println("Netty-------------" + result.toString());
+        ctx.writeAndFlush("Netty:" + result);
     }
 
     @Override

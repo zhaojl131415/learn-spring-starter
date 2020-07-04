@@ -21,9 +21,9 @@ public class NettyClient<T> {
 
     private static NettyClientHandler client;
 
-    private static ExecutorService executor = new ThreadPoolExecutor(5, 10, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+    private static ExecutorService executorService = new ThreadPoolExecutor(5, 10, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
-    public void start(String hostname, Integer port){
+    public void start(String hostName, Integer port) {
         client = new NettyClientHandler();
 
         NioEventLoopGroup group = new NioEventLoopGroup();
@@ -35,27 +35,26 @@ public class NettyClient<T> {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast("decoder", new ObjectDecoder(ClassResolvers
-                        .weakCachingConcurrentResolver(this.getClass().getClassLoader())))
-                                .addLast("encoder", new ObjectEncoder())
-                                .addLast("handler", client);
+                        pipeline.addLast("decoder", new ObjectDecoder(ClassResolvers.weakCachingConcurrentResolver(this.getClass().getClassLoader())))
+                        .addLast("encoder", new ObjectEncoder())
+                        .addLast("handler", client);
                     }
                 });
         try {
-            b.connect(hostname, port).sync();
+            b.connect(hostName, port).sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public String send(String hostname, Integer port, Invocation invocation) {
+    public String send(String hostName, Integer port, Invocation invocation) {
         if (client == null) {
-            start(hostname, port);
+            start(hostName, port);
         }
         client.setInvocation(invocation);
 
         try {
-            return (String) executor.submit(client).get();
+            return (String) executorService.submit(client).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

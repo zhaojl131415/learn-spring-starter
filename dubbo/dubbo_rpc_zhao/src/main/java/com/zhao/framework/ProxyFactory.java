@@ -1,13 +1,6 @@
-package com.zhao.consumer;
+package com.zhao.framework;
 
-import com.zhao.framework.Invocation;
-import com.zhao.framework.Protocol;
-import com.zhao.framework.ProtocolFactory;
-import com.zhao.framework.URL;
 import com.zhao.protocol.dubbo.NettyClient;
-import com.zhao.protocol.dubbo.NettyProtocol;
-import com.zhao.protocol.http.HttpClient;
-import com.zhao.protocol.http.HttpProtocol;
 import com.zhao.register.RemoteRegister;
 
 import java.lang.reflect.Proxy;
@@ -30,12 +23,12 @@ public class ProxyFactory {
 //                    Protocol protocol = new HttpProtocol();
 //                    Protocol protocol = new NettyProtocol();
 //                    Protocol protocol = ProtocolFactory.getProtocol();
-//                    Protocol protocol = ProtocolFactory.getProtocol("netty");
-//                    return protocol.send(url, invocation);
+                    Protocol protocol = ProtocolFactory.getProtocol("netty");
+                    return protocol.send(url, invocation);
 
 //                    HttpClient client = new HttpClient();
-                    NettyClient client = new NettyClient<>();
-                    return client.send(url.getHostname(), url.getPort(), invocation);
+//                    NettyClient client = new NettyClient<>();
+//                    return client.send(url.getHostname(), url.getPort(), invocation);
                 });
     }
 }

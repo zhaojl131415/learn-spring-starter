@@ -1,6 +1,7 @@
 package com.zhao.consumer;
 
 
+import com.zhao.framework.ProxyFactory;
 import com.zhao.provider.api.HelloService;
 
 /**

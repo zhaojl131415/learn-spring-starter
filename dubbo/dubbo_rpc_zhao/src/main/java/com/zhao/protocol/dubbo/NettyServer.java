@@ -1,13 +1,15 @@
 package com.zhao.protocol.dubbo;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
@@ -16,8 +18,10 @@ import io.netty.handler.logging.LoggingHandler;
  */
 public class NettyServer {
 
-    /** Netty 实现*/
-    public void start(String hostname, Integer port){
+    /**
+     * Netty 实现
+     */
+    public void start(String hostName, Integer port) {
         //1 存放client连接
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         //2 用于实际的业务处理操作
@@ -32,19 +36,25 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel sc) throws Exception {
-                        ChannelPipeline p = sc.pipeline();
-                        p.addLast(new NettyServerHandler());
+                        ChannelPipeline pipeline = sc.pipeline();
+                        pipeline.addLast("decoder", new ObjectDecoder(ClassResolvers
+                                .weakCachingConcurrentResolver(this.getClass()
+                                        .getClassLoader())));
+                        pipeline.addLast("encoder", new ObjectEncoder());
+                        pipeline.addLast("handler", new NettyServerHandler());
                     }
                 });
-
         try {
-            ChannelFuture future = b.bind(port).sync();
-            future.channel().closeFuture().sync();
+            b.bind(hostName, port).sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        bossGroup.shutdownGracefully();
-        workerGroup.shutdownGracefully();
+//        bossGroup.shutdownGracefully();
+//        workerGroup.shutdownGracefully();
+    }
+
+    public void close() {
+
     }
 }
