@@ -29,7 +29,6 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
                 case READER_IDLE:
                     //读空闲，不做处理，如果只有读空闲，写不空闲，表示服务器端在往客户端写数据，不能关闭通道
                     System.out.println(ctx.channel().remoteAddress()+"----读空闲");
-                    ctx.channel().close();
                     break;
                 // IdleStateHandler处理器配置的writerIdleTimeSeconds时长超时，状态为WRITER_IDLE
                 case WRITER_IDLE:

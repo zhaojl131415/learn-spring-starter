@@ -7,6 +7,7 @@
 <body>
 <script type="text/javascript">
     var socket;
+    var timer;
 
     //如果浏览器支持WebSocket
     if(window.WebSocket){
@@ -23,12 +24,18 @@
         socket.onopen = function(event){
             var ta = document.getElementById("responseText");
             ta.value = "连接开启";
+            timer = setInterval("send('heartBeat')", 20000);
         }
 
         //连接断掉的回调函数
         socket.onclose = function (event) {
             var ta = document.getElementById("responseText");
             ta.value = ta.value +"\n"+"连接关闭";
+            if (timer != null) {
+                clearInterval(timer);
+                timer = null;
+            }
+
         }
     }else{
         alert("浏览器不支持WebSocket！");

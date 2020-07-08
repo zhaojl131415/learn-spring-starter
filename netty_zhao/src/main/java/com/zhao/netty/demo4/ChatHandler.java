@@ -31,22 +31,26 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
         //1. 获取客户端传递过来的消息,其对象为TextWebSocketFrame
         String text = msg.text();
-//        System.out.println("接收到数据为: "+ text);
-        /**
-         * writeAndFlush接收的参数类型是Object类型，但是一般我们都是要传入管道中传输数据的类型，比如我们当前的demo
-         * 传输的就是TextWebSocketFrame类型的数据
-         */
+        System.out.println("接收到数据为: "+ text);
+
+        if (!text.equals("heartBeat")) {
+            /**
+             * writeAndFlush接收的参数类型是Object类型，但是一般我们都是要传入管道中传输数据的类型，比如我们当前的demo
+             * 传输的就是TextWebSocketFrame类型的数据
+             */
 //        ctx.channel().writeAndFlush(new TextWebSocketFrame(LocalDateTime.now() + "："+ text));
 
-        // 发送数据的客户端
-        Channel channel = ctx.channel();
-        // 遍历客户端群组
-        users.forEach(ch -> {
-            // 给除自己以外的客户端发送数据
+            // 发送数据的客户端
+            Channel channel = ctx.channel();
+            // 遍历客户端群组
+            users.forEach(ch -> {
+                // 给除自己以外的客户端发送数据
 //            if (channel != ch) {
+
                 ch.writeAndFlush(new TextWebSocketFrame(channel.remoteAddress()+ "\n" + LocalDateTime.now() + "："+ text));
 //            }
-        });
+            });
+        }
     }
 
     /**
