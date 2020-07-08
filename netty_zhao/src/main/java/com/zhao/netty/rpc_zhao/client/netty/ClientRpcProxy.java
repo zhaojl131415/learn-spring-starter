@@ -52,6 +52,7 @@ public class ClientRpcProxy {
                                     //或者直接ClassResolvers.cacheDisabled(null)
                                     pipeline.addLast("decoder", new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));//
                                     //将自己编写的客户端业务逻辑处理类加入到pipeline链中
+                                    pipeline.addLast(new ClientHeartBeatHandler());
                                     pipeline.addLast(nettyClientHendler);
                                 }
                             });
@@ -61,7 +62,7 @@ public class ClientRpcProxy {
                     future.channel().writeAndFlush(classInfo).sync();
                     //关闭连接  异步非阻塞
                     // 这里因为调用了.sync()，是同步的，会阻塞，只有当客户端关闭才会执行通过，执行后续代码
-                    future.channel().closeFuture().sync();
+//                    future.channel().closeFuture().sync();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

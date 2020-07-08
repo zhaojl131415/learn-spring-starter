@@ -36,6 +36,7 @@ public class ServerSocketNetty {
                             //添加解码器 入栈：反序列化
                             pipeline.addLast("decoder", new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
                             //将自己编写的服务器端的业务逻辑处理类加入pipeline链中
+                            pipeline.addLast(new ServerHeartBeatHandler());
                             pipeline.addLast(ServerSocketNettyHandler.serverSocketNettyHandler);
                         }
                     });

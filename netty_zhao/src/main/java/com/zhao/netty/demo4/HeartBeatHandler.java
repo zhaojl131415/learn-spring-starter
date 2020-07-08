@@ -23,28 +23,29 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         //判断evt是否属于IdleStateEvent，用于触发用户事件，包含读空闲，写空闲，读写空闲
         if(evt instanceof IdleStateEvent){
-            IdleStateEvent event = (IdleStateEvent)evt;
-            // IdleStateHandler处理器配置的readerIdleTimeSeconds时长超时，状态为READER_IDLE
-            if(event.state() == IdleState.READER_IDLE){
-                //读空闲，不做处理，如果只有读空闲，写不空闲，表示服务器端在往客户端写数据，不能关闭通道
-                System.out.println("进入读空闲");
-
+            IdleStateEvent event= (IdleStateEvent) evt;
+            switch (event.state()){
+                // IdleStateHandler处理器配置的readerIdleTimeSeconds时长超时，状态为READER_IDLE
+                case READER_IDLE:
+                    //读空闲，不做处理，如果只有读空闲，写不空闲，表示服务器端在往客户端写数据，不能关闭通道
+                    System.out.println(ctx.channel().remoteAddress()+"----读空闲");
+                    ctx.channel().close();
+                    break;
+                // IdleStateHandler处理器配置的writerIdleTimeSeconds时长超时，状态为WRITER_IDLE
+                case WRITER_IDLE:
+                    //写空闲，不做处理，如果只有写空闲，读不空闲，表示服务器端在读客户端的数据，不能关闭通道
+                    System.out.println(ctx.channel().remoteAddress()+"----写空闲");
+                    break;
+                // IdleStateHandler处理器配置的allIdleTimeSeconds时长超时，状态为ALL_IDLE
+                case ALL_IDLE:
+                    // 只有读写都空闲，才能关闭通道
+                    System.out.println(ctx.channel().remoteAddress()+"----读写空闲");
+                    System.out.println("channel关闭前，users的数量为："+ChatHandler.users.size());
+                    // 关闭channel
+                    ctx.channel().close();
+                    System.out.println("channel关闭后，users的数量为："+ChatHandler.users.size());
+                    break;
             }
-            // IdleStateHandler处理器配置的writerIdleTimeSeconds时长超时，状态为WRITER_IDLE
-            else if(event.state() == IdleState.WRITER_IDLE){
-                //写空闲，不做处理，如果只有写空闲，读不空闲，表示服务器端在读客户端的数据，不能关闭通道
-                System.out.println("进入写空闲");
-            }
-            // IdleStateHandler处理器配置的allIdleTimeSeconds时长超时，状态为ALL_IDLE
-            else if(event.state() == IdleState.ALL_IDLE){
-                // 只有读写都空闲，才能关闭通道
-                System.out.println("channel关闭前，users的数量为："+ChatHandler.users.size());
-                //关闭channel
-                Channel channel = ctx.channel();
-                channel.close();
-                System.out.println("channel关闭后，users的数量为："+ChatHandler.users.size());
-            }
-
         }
     }
 }

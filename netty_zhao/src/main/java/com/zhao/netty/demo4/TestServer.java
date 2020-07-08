@@ -8,6 +8,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+// websocket长连接示例
 public class TestServer {
     public static void main(String[] args) {
         EventLoopGroup bossGroup=new NioEventLoopGroup();  //接收客户端连接的线程组

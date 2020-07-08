@@ -15,5 +15,8 @@ public class ClientSocketNetty {
 //        }
         TestService o2 = (TestService) ClientRpcProxy.create(TestService.class);
         System.out.println(o2.listByid(0));
+        while (true){
+            Thread.sleep(1000);
+        }
     }
 }

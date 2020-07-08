@@ -27,6 +27,7 @@ public class TestServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new HeartBeatHandler());
         // WebSocket处理器：入栈
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+        //websocket定义了传递数据的6中frame类型
         //定义自己的handler,主要是对请求进行处理和发送
         pipeline.addLast(new ChatHandler());
     }

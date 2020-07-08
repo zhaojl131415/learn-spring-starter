@@ -8,18 +8,18 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class TestServer {
     public static void main(String[] args) {
-        EventLoopGroup bossGroup=new NioEventLoopGroup();
-        EventLoopGroup workGroup=new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup();
         try {
-            ServerBootstrap serverBootstrap=new ServerBootstrap();
-            serverBootstrap.group(bossGroup,workGroup)
-                            .channel(NioServerSocketChannel.class)
-                            .childHandler(new TestServerInitializer());
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.group(bossGroup, workGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new TestServerInitializer());
             ChannelFuture channelFuture = serverBootstrap.bind(8989).sync();
             channelFuture.channel().closeFuture().sync();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
         }
