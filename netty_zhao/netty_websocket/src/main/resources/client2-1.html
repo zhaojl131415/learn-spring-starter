@@ -1,0 +1,47 @@
+<html>
+<head lang="zh-cn">
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    var socket;
+    var timer;
+    if (!window.WebSocket) {
+        window.WebSocket = window.MozWebSocket;
+    }
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://localhost:8083/websocket/?clientInfo=e2lkOjIscmlkOjEsdG9rZW46JzQzNjA2ODExYzczMDVjY2M2YWJiMmJlMTEzNDU2YmZkJ30=");
+        socket.onmessage = function (event) {
+            console.log(event.data);
+        };
+        socket.onopen = function (event) {
+            console.log("websocket 打开了");
+            timer = setInterval("send('heartbeat')", 20000);
+        };
+        socket.onclose = function (event) {
+            console.log("websocket 关闭了");
+            if (timer != null) {
+                clearInterval(timer);
+                timer = null;
+            }
+        };
+    }
+
+    function send(message) {
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN) {
+            socket.send(message);
+        } else {
+            alert("The socket is not open.");
+        }
+    }
+</script>
+<form onsubmit="return false;">
+    <input type="text" name="message" value="Hello, World!"/>
+    <input type="button" value="Send Web Socket Data" onclick="send(this.form.message.value)"/>
+</form>
+</body>
+</html>

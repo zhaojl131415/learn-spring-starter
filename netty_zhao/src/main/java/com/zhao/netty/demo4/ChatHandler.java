@@ -64,10 +64,10 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         Channel channel = ctx.channel();
 
 //        System.out.println("客户端添加，channelId为：" +  channel.id().asShortText());
-//        System.out.println(channel.remoteAddress() + "加入");
+        System.out.println(channel.remoteAddress() + "进入直播间");
 //        System.out.println("A");
         // 广播给群组内的所有客户端
-        users.writeAndFlush(new TextWebSocketFrame(channel.remoteAddress() + "加入直播间\n"));
+        users.writeAndFlush(new TextWebSocketFrame(channel.remoteAddress() + "进入直播间\n"));
         // 给所有客户端广播之后，再将自己加入群组，自己加入的通知，不用发给自己
         users.add(channel);
     }
@@ -78,6 +78,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         Channel channel = ctx.channel();
         //打印移除的channel
 //        System.out.println("客户端被移除，channelId为：" + channel.id().asShortText());
+        System.out.println(channel.remoteAddress() + "退出直播间");
         // 广播给群组内的所有客户端
         users.writeAndFlush(new TextWebSocketFrame(channel.remoteAddress() + "退出直播间\n"));
         users.remove(ctx.channel());
@@ -88,7 +89,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         users.writeAndFlush(new TextWebSocketFrame(channel.remoteAddress() + "上线\n"));
-//        System.out.println(channel.remoteAddress() + "上线");
+        System.out.println(channel.remoteAddress() + "上线");
 //        System.out.println(users.size());
     }
 
@@ -97,7 +98,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         users.writeAndFlush(new TextWebSocketFrame(channel.remoteAddress() + "下线\n"));
-//        System.out.println(channel.remoteAddress() + "下线");
+        System.out.println(channel.remoteAddress() + "下线");
     }
 
 //    //channel注册事件
