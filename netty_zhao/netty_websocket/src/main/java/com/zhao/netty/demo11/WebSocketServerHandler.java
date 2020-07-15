@@ -24,6 +24,17 @@ import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+
+/**
+ * (1) 第一次握手由HTTP协议承载，所以是一个HTTP消息，根据消息头中是否包含"Upgrade"字段来判断是否是websocket。
+ * (2) 通过校验后，构造WebSocketServerHandshaker，通过它构造握手响应信息返回给客户端，同时将WebSocket相关的编码和解码类动态添加到ChannelPipeline中。
+ *
+ * 下面分析链路建立之后的操作：
+ * (1) 客户端通过文本框提交请求给服务端，Handler收到之后已经解码之后的WebSocketFrame消息。
+ * (2) 如果是关闭按链路的指令就关闭链路
+ * (3) 如果是维持链路的ping消息就返回Pong消息。
+ * (4) 否则就返回应答消息
+ */
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
     // websocket 服务的 uri
@@ -37,13 +48,18 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     private Client client;
 
+    // 握手
     private WebSocketServerHandshaker handshaker;
 
+    // 第一次握手由HTTP协议承载，所以是一个HTTP消息，根据消息头中是否包含"Upgrade"字段来判断是否是websocket。
     @Override
     public void messageReceived(ChannelHandlerContext ctx, Object msg) {
+        // 接收处理消息
         if (msg instanceof FullHttpRequest) {
+            // 处理HTTP请求
             handleHttpRequest(ctx, (FullHttpRequest) msg);
         } else if (msg instanceof WebSocketFrame) {
+            // 处理WebSocket
             handleWebSocketFrame(ctx, (WebSocketFrame) msg);
         }
     }
@@ -53,6 +69,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         ctx.flush();
     }
 
+    /**
+     * 处理Http请求
+     * @param ctx
+     * @param req
+     */
     private void handleHttpRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         // Handle a bad request.
         if (!req.decoderResult().isSuccess()) {
@@ -80,6 +101,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             return;
         }
 
+        // 客户端注册
         client = RequestService.clientRegister(parameters.get(HTTP_REQUEST_STRING).get(0));
         if (client.getRoomId() == 0) {
             System.err.printf("房间号不可缺省");
@@ -94,7 +116,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         // 确定有房间号,才将客户端加入到频道中
         channelGroupMap.get(client.getRoomId()).add(ctx.channel());
 
-        // Handshake
+        // Handshake  构造握手响应返回，
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(getWebSocketLocation(req), null, true);
         handshaker = wsFactory.newHandshaker(req);
         if (handshaker == null) {
@@ -113,6 +135,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
     }
 
+    // 广播
     private void broadcast(ChannelHandlerContext ctx, WebSocketFrame frame) {
 
         if (client.getId() == 0) {
@@ -121,7 +144,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             ctx.channel().write(new TextWebSocketFrame(msg));
             return;
         }
-
+        // 返回应答消息
         String request = ((TextWebSocketFrame) frame).text();
         System.out.println(" 收到 " + ctx.channel() + request);
 
@@ -136,16 +159,23 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     }
 
+    /**
+     * 处理WebSocket框架
+     * @param ctx
+     * @param frame
+     */
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
-
+        // 判断是否是关闭链路的指令
         if (frame instanceof CloseWebSocketFrame) {
             handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
             return;
         }
+        // 判断是否是Ping消息
         if (frame instanceof PingWebSocketFrame) {
             ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
             return;
         }
+        // 本例程仅支持文本消息，不支持二进制消息
         if (!(frame instanceof TextWebSocketFrame)) {
             throw new UnsupportedOperationException(String.format("%s frame types not supported", frame.getClass().getName()));
         }
@@ -154,25 +184,28 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     }
 
     private static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
+        // 返回应答给客户端
         if (res.status().code() != 200) {
             ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
             res.content().writeBytes(buf);
             buf.release();
             HttpHeaderUtil.setContentLength(res, res.content().readableBytes());
         }
-
+        // 如果是非Keep-Alive，关闭连接
         ChannelFuture f = ctx.channel().writeAndFlush(res);
         if (!HttpHeaderUtil.isKeepAlive(req) || res.status().code() != 200) {
             f.addListener(ChannelFutureListener.CLOSE);
         }
     }
 
+    //  发生异常时，关闭连接（channel），随后将channel从ChannelGroup中移除
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }
 
+    // 当客户端连接服务端之后(打开连接)
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel incoming = ctx.channel();
@@ -183,6 +216,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         if (client != null && channelGroupMap.containsKey(client.getRoomId())) {
             channelGroupMap.get(client.getRoomId()).remove(ctx.channel());
+            System.out.println(ctx.channel().remoteAddress() + "退出直播间");
         }
     }
 

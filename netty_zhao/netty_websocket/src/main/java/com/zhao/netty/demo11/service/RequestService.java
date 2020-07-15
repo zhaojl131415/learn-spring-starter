@@ -11,15 +11,17 @@ public class RequestService {
     /**
      * 根据客户端的请求生成 Client
      *
-     * @param request 例如 {id:1;rid:21;token:'43606811c7305ccc6abb2be116579bfd'}
+     * @param clientInfo 客户端信息: 例如 {id:1;rid:21;token:'43606811c7305ccc6abb2be116579bfd'}
      * @return
      */
-    public static Client clientRegister(String request) {
-        String res = new String(Base64.decodeBase64(request));
+    public static Client clientRegister(String clientInfo) {
+        // 解码客户端信息
+        String res = new String(Base64.decodeBase64(clientInfo));
         JSONObject json = new JSONObject(res);
 
         Client client = new Client();
 
+        // 判断json是否存在直播间Id: rid
         if (!json.has("rid")) {
             return client;
         }
@@ -31,6 +33,7 @@ public class RequestService {
             return client;
         }
 
+        // 判断json是否存在userId和token
         if (!json.has("id") || !json.has("token")) {
             return client;
         }
@@ -46,6 +49,7 @@ public class RequestService {
             return client;
         }
 
+        // 验证用户token
         if (!checkToken(id, token)) {
             return client;
         }
