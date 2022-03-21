@@ -9,12 +9,14 @@ import java.net.Socket;
  * @version 1.0
  * @description 服务器端
  * @date 2020-04-04 10:42
+ *
+ * 空连接会造成资源浪费
  */
 public class BioServer {
 
     // 服务端socket
     ServerSocket serverSocket;
-
+    // 服务端处理器线程池
     ServerHandlerExecutorPool executorPool;
 
     public BioServer() {
@@ -28,9 +30,13 @@ public class BioServer {
 
                 System.out.println("客户端:" + socket.getRemoteSocketAddress().toString() + "来了...");
 
+                // 方案1: 直接调用: 会阻塞在read(), 阻塞其他连接
+//                new BioServerHandler(socket).run();
+                // 方案2: 新开子线程,异步调用, 每来一个新连接, 就需要创建一个子线程, 连接太多, 就会造成线程太多, 服务器扛不住
 //                new Thread(new BioServerHandler(socket)).start();
 
                 /**
+                 * 方案3: 线程池异步调用, 虽然解决了新建太多子线程问题, 但是同时也限制了并发数, 线程池的最大线程数决定了同一时间的最大并发数
                  * @see BioServerHandler#run()
                  */
                 executorPool.execute(new BioServerHandler(socket));

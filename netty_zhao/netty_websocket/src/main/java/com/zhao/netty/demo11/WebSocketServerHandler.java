@@ -13,6 +13,7 @@ import com.zhao.netty.demo11.dto.Response;
 import com.zhao.netty.demo11.entity.Client;
 import com.zhao.netty.demo11.service.MessageService;
 import com.zhao.netty.demo11.service.RequestService;
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -40,11 +41,13 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     // websocket 服务的 uri
     private static final String WEBSOCKET_PATH = "/websocket";
 
-    // 一个 ChannelGroup 代表一个直播频道
-    private static Map<Integer, ChannelGroup> channelGroupMap = new ConcurrentHashMap<>();
+    // 一个 ChannelGroup 代表一个直播频道 <userId, <event, client>>
+    private static Map<Long, Map<String, ChannelGroup>> channelGroupMap = new ConcurrentHashMap<>();
 
     // 本次请求的 code
-    private static final String HTTP_REQUEST_STRING = "clientInfo";
+    private static final String HTTP_REQUEST_USERID = "id";
+    private static final String HTTP_REQUEST_EQUIPMENTCODE = "token";
+    private static final String HTTP_REQUEST_EVENT = "event";
 
     private Client client;
 
@@ -95,26 +98,45 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         QueryStringDecoder queryStringDecoder = new QueryStringDecoder(req.uri());
         Map<String, List<String>> parameters = queryStringDecoder.parameters();
 
-        if (parameters.size() == 0 || !parameters.containsKey(HTTP_REQUEST_STRING)) {
-            System.err.printf(HTTP_REQUEST_STRING + "参数不可缺省");
-            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND));
-            return;
-        }
+//        if (parameters.size() == 0 || !parameters.containsKey(HTTP_REQUEST_EQUIPMENTCODE)) {
+//            System.err.printf(HTTP_REQUEST_EQUIPMENTCODE + "参数不可缺省");
+//            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND));
+//            return;
+//        }
+
+        String clientInfo = new String(Base64.decodeBase64(parameters.get("clientInfo").get(0)));
+        JSONObject jsonObject = new JSONObject(clientInfo);
+
 
         // 客户端注册
-        client = RequestService.clientRegister(parameters.get(HTTP_REQUEST_STRING).get(0));
-        if (client.getRoomId() == 0) {
-            System.err.printf("房间号不可缺省");
+        client = RequestService.clientRegister(String.valueOf(jsonObject.getInt(HTTP_REQUEST_USERID)), jsonObject.getString(HTTP_REQUEST_EVENT), jsonObject.getString(HTTP_REQUEST_EQUIPMENTCODE));
+        if (client.getEvent().equals("")) {
+            System.err.printf("操作事件不可缺省");
             sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND));
             return;
         }
 
+        Map<String, ChannelGroup> eventMap;
         // 房间列表中如果不存在则为该频道,则新增一个频道 ChannelGroup
-        if (!channelGroupMap.containsKey(client.getRoomId())) {
-            channelGroupMap.put(client.getRoomId(), new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+        if (!channelGroupMap.containsKey(client.getId())) {
+            System.out.println("用户:" + client.getId() + ":登录");
+            eventMap = new ConcurrentHashMap<>();
+        } else {
+            eventMap = channelGroupMap.get(client.getId());
+        }
+
+        if (!eventMap.containsKey(client.getEvent())) {
+            if ("live".equals(client.getEvent())){
+                System.out.println(client.getId()+ ":进入直播间");
+            }
+
+            eventMap.put(client.getEvent(), new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
         }
         // 确定有房间号,才将客户端加入到频道中
-        channelGroupMap.get(client.getRoomId()).add(ctx.channel());
+        eventMap.get(client.getEvent()).add(ctx.channel());
+        channelGroupMap.put(client.getId(), eventMap);
+
+        System.out.println("当前在线人数:" + channelGroupMap.get(client.getId()).size());
 
         // Handshake  构造握手响应返回，
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(getWebSocketLocation(req), null, true);
@@ -151,12 +173,16 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         if (!request.equals("heartbeat")) {
             Response response = MessageService.sendMessage(client, request);
             String msg = new JSONObject(response).toString();
-            if (channelGroupMap.containsKey(client.getRoomId())) {
-                channelGroupMap.get(client.getRoomId()).writeAndFlush(new TextWebSocketFrame(msg));
+            if (channelGroupMap.containsKey(client.getId()) && channelGroupMap.get(client.getId()).containsKey(client.getEvent())) {
+                ChannelGroup channelGroup = channelGroupMap.get(client.getId()).get(client.getEvent());
+                channelGroup.forEach(c -> {
+                    c.writeAndFlush(new TextWebSocketFrame(String.format("msg: {}, num: 1", msg)));
+                    c.writeAndFlush(new TextWebSocketFrame(String.format("msg: {}, num: 2", msg)));
+                    c.writeAndFlush(new TextWebSocketFrame(String.format("msg: {}, num: 3", msg)));
+                    c.writeAndFlush(new TextWebSocketFrame(String.format("msg: {}, num: 4", msg)));
+                });
             }
         }
-
-
     }
 
     /**
@@ -209,14 +235,26 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel incoming = ctx.channel();
-        System.out.println(incoming.remoteAddress() + "进入直播间");
+//        System.out.println(incoming.remoteAddress() + "进入直播间");
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        if (client != null && channelGroupMap.containsKey(client.getRoomId())) {
-            channelGroupMap.get(client.getRoomId()).remove(ctx.channel());
-            System.out.println(ctx.channel().remoteAddress() + "退出直播间");
+        if (client != null && channelGroupMap.containsKey(client.getId())) {
+            Map<String, ChannelGroup> eventMap = channelGroupMap.get(client.getId());
+            eventMap.get(client.getEvent()).remove(ctx.channel());
+            if(!eventMap.containsKey(client.getEvent()) || eventMap.get(client.getEvent()).size() == 0) {
+                eventMap.remove(client.getEvent());
+                if ("live".equals(client.getEvent())) {
+                    System.out.println("用户" + client.getId() + "退出直播间");
+                }
+            }
+
+            if (eventMap == null || eventMap.size() == 0) {
+                channelGroupMap.remove(client.getId());
+                System.out.println("用户" + client.getId() + "注销");
+            }
+            System.out.println("当前在线人数:" + channelGroupMap.size());
         }
     }
 

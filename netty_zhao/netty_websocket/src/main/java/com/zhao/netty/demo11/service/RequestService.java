@@ -11,60 +11,44 @@ public class RequestService {
     /**
      * 根据客户端的请求生成 Client
      *
-     * @param clientInfo 客户端信息: 例如 {id:1;rid:21;token:'43606811c7305ccc6abb2be116579bfd'}
+     * @param clientInfo 客户端信息: 例如 {id:1,event:'login',token:'43606811c7305ccc6abb2be116579bfd'}
      * @return
      */
-    public static Client clientRegister(String clientInfo) {
+    public static Client clientRegister(String userId, String event, String equipmentCode) {
         // 解码客户端信息
-        String res = new String(Base64.decodeBase64(clientInfo));
-        JSONObject json = new JSONObject(res);
-
         Client client = new Client();
 
         // 判断json是否存在直播间Id: rid
-        if (!json.has("rid")) {
+        if ("".equals(event)) {
             return client;
         }
 
         try {
-            client.setRoomId(json.getInt("rid"));
+            client.setEvent(event);
         } catch (JSONException e) {
             e.printStackTrace();
             return client;
         }
 
         // 判断json是否存在userId和token
-        if (!json.has("id") || !json.has("token")) {
+        if ("".equals(userId) || "".equals(equipmentCode)) {
             return client;
         }
 
-        Long id;
-        String token;
-
-        try {
-            id = json.getLong("id");
-            token = json.getString("token");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return client;
-        }
-
+        Long uId = Long.parseLong(userId);
         // 验证用户token
-        if (!checkToken(id, token)) {
-            return client;
+        if (checkToken(uId, equipmentCode)) {
+            client.setId(uId);
         }
-
-        client.setId(id);
-
         return client;
     }
 
 
     public static void main(String[] args) {
-        System.out.println(Base64.encodeBase64String("{id:1,rid:1,token:'43606811c7305ccc6abb2be113456bfd'}".getBytes()));
-        System.out.println(Base64.encodeBase64String("{id:1,rid:11,token:'43606811c7305ccc6abb2be113456bfd'}".getBytes()));
-        System.out.println(Base64.encodeBase64String("{id:2,rid:1,token:'43606811c7305ccc6abb2be113456bfd'}".getBytes()));
-        System.out.println(Base64.encodeBase64String("{id:3,rid:11,token:'43606811c7305ccc6abb2be113456bfd'}".getBytes()));
+        System.out.println(Base64.encodeBase64String("{id:1,event:'login',token:'43606811c7305ccc6abb2be113456bfa'}".getBytes()));
+        System.out.println(Base64.encodeBase64String("{id:1,event:'live',token:'43606811c7305ccc6abb2be113456bfb'}".getBytes()));
+        System.out.println(Base64.encodeBase64String("{id:2,event:'login',token:'43606811c7305ccc6abb2be113456bfc'}".getBytes()));
+        System.out.println(Base64.encodeBase64String("{id:3,event:'live',token:'43606811c7305ccc6abb2be113456bfd'}".getBytes()));
 
 
 //        String clientJson = "{id:1,rid:1,token:'43606811c7305ccc6abb2be113456bfd'}";

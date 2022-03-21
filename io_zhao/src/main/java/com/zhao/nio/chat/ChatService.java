@@ -21,12 +21,15 @@ public class ChatService {
     public ChatService() {
         try {
             //服务端channel
+            // 相当于开饭店, 饭店开业
             serverSocketChannel = ServerSocketChannel.open();
 
             //选择器对象
+            // 服务员
             selector = Selector.open();
 
             //绑定端口
+            // 饭店的位置, 招牌
             serverSocketChannel.bind(new InetSocketAddress(9090));
 
             //设置连接非阻塞式: 必不可少的

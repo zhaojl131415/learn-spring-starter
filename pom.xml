@@ -35,6 +35,9 @@
         <module>mybatis</module>
         <module>crawler</module>
         <module>docker</module>
+        <module>servlet</module>
+        <module>algorithm</module>
+        <module>spring-framework</module>
     </modules>
 
     <dependencies>

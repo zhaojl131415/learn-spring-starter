@@ -1,7 +1,7 @@
 package com.zhao.server;
 
-import com.zhao.transaction.annotation.ZhaoGlobalTransaction;
-import com.zhao.transaction.util.HttpClient;
+//import com.zhao.transaction.annotation.ZhaoGlobalTransaction;
+//import com.zhao.transaction.util.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +12,7 @@ public class DemoService {
     @Autowired
     private DemoDao demoDao;
 
-    @ZhaoGlobalTransaction(isStart = true)
+//    @ZhaoGlobalTransaction(isStart = true)
     @Transactional
     public void test() {
         demoDao.insert("server1");
@@ -23,7 +23,8 @@ public class DemoService {
 
     public String getServer(String url) {
         // 远程调用: 在header里添加事务组id(groupId)和事务数量
-        return HttpClient.get(url);
+//        return HttpClient.get(url);
+        return null;
     }
 
 }

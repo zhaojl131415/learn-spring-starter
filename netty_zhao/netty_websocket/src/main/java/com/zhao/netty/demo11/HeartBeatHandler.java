@@ -1,5 +1,6 @@
 package com.zhao.netty.demo11;
 
+import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -8,7 +9,7 @@ import io.netty.handler.timeout.IdleStateEvent;
  * 用于处理客户端与服务端的心跳，在客户端空闲（如飞行模式)时关闭channel，节省服务器资源
  *
  */
-public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
+public class HeartBeatHandler extends ChannelHandlerAdapter {
 
     /**
      * 用户事件触发的处理器

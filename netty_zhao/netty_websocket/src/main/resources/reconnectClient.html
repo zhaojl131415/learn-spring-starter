@@ -4,8 +4,15 @@
     <title></title>
 </head>
 <body>
+<script type="text/javascript" src="js/md5.js" ></script>
 <script type="text/javascript" src="js/reconnecting-websocket.min.js" ></script>
 <script type="text/javascript">
+
+           var salt = "Yuuxin";
+           var companyId = "171487";
+           var userId = "46033";
+           var timestamp = new Date().getTime();
+            var token = hex_md5(encodeURIComponent(companyId + userId + timestamp + salt)).toUpperCase()
 
     var socket;
     var timer;
@@ -13,13 +20,24 @@
         window.WebSocket = window.MozWebSocket;
     }
     if (window.WebSocket) {
-        socket = new ReconnectingWebSocket("ws://localhost:8083/websocket?clientInfo=e2lkOjEscmlkOjEsdG9rZW46JzQzNjA2ODExYzczMDVjY2M2YWJiMmJlMTEzNDU2YmZkJ30=");
+        // socket = new ReconnectingWebSocket("ws://netty.dev.yunduoketang.cn/websocket");
+        // socket = new ReconnectingWebSocket("ws://netty.rel-s.yunduoketang.cn/websocket");
+        socket = new ReconnectingWebSocket("ws://localhost:18888/websocket");
         socket.onmessage = function (event) {
             console.log(event.data);
+            // alert(event.data);
+            // window.close();
+            // socket.close();
         };
+
         socket.onopen = function (event) {
             console.log("websocket 打开了");
-            timer = setInterval("send('heartbeat')", 20000);
+
+             // var message_auth = {"type":"NETTY_AUTH_REQ","companyId":171487,"schoolId":"175441","userId":35387,"token":"63CF6C5773F278C2C9221F97DD8745FA","date":1611639146224,"deviceId":"b2360c1b8285d28cd3f57576639a0c86","module":"question"}
+
+             var message_auth = {"type":"NETTY_AUTH_REQ","companyId":171478,"schoolId":"175429","userId":87,"token":"F26C44E6F4557EB5FC0A32C47B1BC0DC","date":1626254148623,"deviceId":"ee6bbc251828ec08f223c05fd20c20b4","module":"question"}
+            socket.send(JSON.stringify(message_auth));
+
         };
         socket.onclose = function (event) {
             console.log("websocket 关闭了");
@@ -30,20 +48,270 @@
         };
     }
 
-    function send(message) {
+    function send() {
+        // debugger;
         if (!window.WebSocket) {
             return;
         }
         if (socket.readyState == WebSocket.OPEN) {
-            socket.send(message);
+
+            // 基础参数
+            // var message_basic = {
+            //     module: "question",
+            //     companyId: companyId,
+            //     schoolId: "7496",
+            //     userId: userId,
+            //     token: token,
+            //     date: timestamp,
+            //     deviceId: "110bdadfab7c54411f2c041faa3933e2",
+            //     recordId: "2451385"
+            // }
+
+
+            // socket.send(message);
+            // // 生成试题
+            // var message_paper_questions = {"type":"paper_questions","exerciseType":"2","recordId":"2455406","use":"exam","paperId":0,"clientId":"","prevSessionId":"00163efffe0c63b9-00000001-000003a6-10b062ba18b2aac8-b59d791d"}
+
+
+
+            var message_paper_questions = {"type":"paper_questions_v2","exerciseType":"7","recordId":"29900929","use":"exercise","paperId":0,"clientId":"","prevSessionId":"8c8590fffe6c6792-0000e63b-0000000d-26da3474249274b6-1009e7f9"}
+
+            // var message_paper_questions = {"type":"paper_questions","exerciseType":"5","recordId":"1605694100","use":"exam","paperId":"5949227099193344","name":"","subjectId":"1302","chapterId":"","sectionId":"","clientId":"e6ce38d0-2971-11eb-8fca-ddb0639d8515","prevSessionId":"00163efffe0c63b9-00000001-00000d05-93bf0fe965d96190-90a11c90"}
+
+            socket.send(JSON.stringify(message_paper_questions));
+
+            // var message_paper_questions = {"type":"paper_questions","exerciseType":"5","recordId":"1605694100","use":"exam","paperId":"5949227099193344","name":"","subjectId":"1302","chapterId":"","sectionId":"","clientId":"e6ce38d0-2971-11eb-8fca-ddb0639d8515","prevSessionId":"00163efffe0c63b9-00000001-00000d05-93bf0fe965d96190-90a11c90"}
+
+            // socket.send(JSON.stringify(message_paper_questions));
+            // var message_paper_questions = {"type":"paper_questions","exerciseType":"4","recordId":"1603880968","use":"exam","paperId":0,"name":"","subjectId":"1126","chapterId":"","sectionId":"","clientId":"ff87d3a0-1903-11eb-aabb-6752c573f442"}
+
+
+            // // 切换试题
+            var message_switch_question = {"type":"switch_question","recordId":29900929,"use":"exercise","exerciseType":"7","clientId":"","targetIndex":"1","exercisePageKey":"exercise:questions:paper:user_87_record_id_29900929_0"}
+            socket.send(JSON.stringify(message_switch_question));
+            // var message_switch_question = {"type":"switch_question","recordId":1605694100,"exerciseType":"5","clientId":"e6ce38d0-2971-11eb-8fca-ddb0639d8515","targetIndex":1,"exercisePageKey":"exercise:questions:user_e6ce38d0-2971-11eb-8fca-ddb0639d8515_record_id_1605685839_0"}
+            // socket.send(JSON.stringify(message_switch_question));
+
+            // message_switch_question = {"type":"switch_question","recordId":2477417,"exerciseType":"10","clientId":"","targetIndex":"103.4","exercisePageKey":"exercise:questions:paper:snapshot:exam_5006ea651dfe46489ee37461797c8a63_102"}
+            // socket.send(JSON.stringify(message_switch_question));
+
+            
+
+
+
+            // _record_id_
+            // {
+            //     module: "question",
+            //     type: "paper_questions",
+            //     exerciseType: "8",
+            //     recordId:"2453923",
+            //     use: "exam",
+            //     paperId: "0",
+            //     cliType: "pc"
+            // }
+            // {"type":"paper_questions","exerciseType":"4","recordId":"2451424","use":"exam","paperId":0}
+
+            // // 单题提交
+            // var message_submit_question = {"type":"submit_question","recordId":1614651222,"exerciseType":"4","index":1,"cIndex":"0","answer":"[\"A\"]","clientId":"c4f01360-7afb-11eb-9f58-bf6705ee64dc","exercisePageKey":"exercise:snapshot:paper:c4f01360-7afb-11eb-9f58-bf6705ee64dc_1614651222_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+            // // // 单题提交
+            // var message_submit_question = {"type":"submit_question","recordId":1614651222,"exerciseType":"4","index":2,"cIndex":"0","answer":"[\"B\"]","clientId":"c4f01360-7afb-11eb-9f58-bf6705ee64dc","exercisePageKey":"exercise:snapshot:paper:c4f01360-7afb-11eb-9f58-bf6705ee64dc_1614651222_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+
+            // var message_submit_question = {"type":"submit_question","recordId":5,"exerciseType":"9","index":2,"cIndex":"0","answer":"[\"B\"]","clientId":"","exercisePageKey":"exercise:snapshot:paper:70_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+            // var message_submit_question = {"type":"submit_question","recordId":5,"exerciseType":"9","index":3,"cIndex":"0","answer":"[\"C\"]","clientId":"","exercisePageKey":"exercise:snapshot:paper:70_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+
+
+
+            // var message_submit_question = {"type":"submit_question","recordId":1614651222,"exerciseType":"4","index":1,"cIndex":"3","answer":"[\"C\"]","clientId":"c4f01360-7afb-11eb-9f58-bf6705ee64dc","exercisePageKey":"exercise:snapshot:paper:c4f01360-7afb-11eb-9f58-bf6705ee64dc_1614651222_2"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+            // var message_submit_question = {"type":"submit_question","recordId":1614651222,"exerciseType":"4","index":1,"cIndex":"4","answer":"[\"D\"]","clientId":"c4f01360-7afb-11eb-9f58-bf6705ee64dc","exercisePageKey":"exercise:snapshot:paper:c4f01360-7afb-11eb-9f58-bf6705ee64dc_1614651222_2"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+            // var message_submit_question = {"type":"submit_question","recordId":2456333,"exerciseType":"4","index":10,"cIndex":"0","answer":"[\"[\\\"1\\\",\\\"2\\\",\\\"3\\\",\\\"4\\\"]\"]","clientId":"","exercisePageKey":"exercise:questions:user_224_record_id_2456333_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+            // var message_submit_question = {"type":"submit_question","recordId":2456333,"exerciseType":"4","index":11,"cIndex":"0","answer":"[\"[\\\"1\\\",\\\"2\\\",\\\"3\\\",\\\"4\\\"]\"]","clientId":"","exercisePageKey":"exercise:questions:user_224_record_id_2456333_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+            // var message_submit_question = {"type":"submit_question","recordId":2456333,"exerciseType":"4","index":12,"cIndex":"0","answer":"[\"[\\\"2\\\",\\\"3\\\",\\\"4\\\",\\\"5\\\"]\"]","clientId":"","exercisePageKey":"exercise:questions:user_224_record_id_2456333_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+            // var message_submit_question = {"type":"submit_question","recordId":2456333,"exerciseType":"4","index":13,"cIndex":"0","answer":"[\"[\\\"1\\\",\\\"2\\\",\\\"3\\\",\\\"4\\\"]\"]","clientId":"","exercisePageKey":"exercise:questions:user_224_record_id_2456333_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+
+
+
+            // var message_submit_question = {"type":"submit_question","recordId":2456333,"exerciseType":"4","index":14,"cIndex":"0","answer":"[\"ABCD\"]","clientId":"","exercisePageKey":"exercise:questions:user_224_record_id_2456333_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+            // var message_submit_question = {"type":"submit_question","recordId":2456333,"exerciseType":"4","index":15,"cIndex":"0","answer":"[\"ABCD\"]","clientId":"","exercisePageKey":"exercise:questions:user_224_record_id_2456333_0"}
+            // socket.send(JSON.stringify(message_submit_question));
+
+
+
+
+            // 暂停答题
+            var message_pause = {
+                recordId:"2453808",
+                type: "pause",
+                nextFlag: true
+            }
+
+            // 继续答题
+            var message_resume = {
+                recordId:"2453808",
+                type: "resume"
+            }
+
+            // 标记
+            var message_mark = {"type":"mark","recordId":2536205,"exerciseType":"5","use":"wrong","index":1,"cIndex":"0","qsId":6283867283832832,"exercisePageKey":"exercise:questions:wrong:user_4803798_record_id_2536205_1"}
+
+            // var message_mark = {"type":"mark","recordId":2454436,"exerciseType":"1","use":"exercise","index":2,"cIndex":"22.2","qsId":5897052391677965,"exercisePageKey":"exercise:questions:user_11_record_id_2454436_21"}
+            // socket.send(JSON.stringify(message_mark));
+
+            // 收藏
+            // var message_sign = {"type":"sign","recordId":2506277,"exerciseType":"9","use":"exam","index":1,"cIndex":"0","qsId":6083973213347869,"exercisePageKey":"exercise:questions:paper:snapshot:exam_6719f8da4a6b460abdef2cff5c33408a_0"}
+            // socket.send(JSON.stringify(message_sign));
+
+            // 交卷
+            var message_submit = {"type":"submit","recordId":2460578}
+            // socket.send(JSON.stringify(message_submit));
+
+            // 错题回顾
+            var message_review = {"type":"review","exerciseType":"4","recordId":"2456333","use":"wrong","paperId":0,"clientId":"","prevSessionId":"00163efffe0c63b9-00000001-00000f6e-9ca3251c5fa8ec89-480004ce"}
+            // socket.send(JSON.stringify(message_review));
+
+
+            // // 切换试题
+            // var message_switch_question = {"type":"switch_question","recordId":2456333,"exerciseType":"4","clientId":"","targetIndex":15,"exercisePageKey":"exercise:questions:wrong:user_224_record_id_2456333_0"}
+            // socket.send(JSON.stringify(message_switch_question));
+
+
+            // var au = {"type":"NETTY_AUTH_REQ","companyId":171478,"schoolId":"175429","userId":69,"token":"11B87563B1479A0316F8C3FD71AA52AD","date":1604906209683,"deviceId":"5ef52c94ae964a9d7c3d67171e0f2d99","module":"question"};
+            // socket.send(JSON.stringify(au));
+
+
+
+
+            // socket.send(JSON.stringify(message_submit_question));
+            // socket.send(JSON.stringify(message_pause));
+            // socket.send(JSON.stringify(message_resume));
+            // socket.send(JSON.stringify(message_switch_question));
+            // socket.send(JSON.stringify(message_submit));
+            // socket.send(JSON.stringify(message_review));
+
+
+            
+
+            // var message_auth = {
+            //     module: "netty",
+            //     type: "NETTY_AUTH_REQ",
+            //     companyId: companyId,
+            //     schoolId: "111111267",
+            //     userId: userId,
+            //     token: token,
+            //     date: timestamp,
+            //     deviceId: "110bdadfab7c54411f2c041faa3933e2"
+            // }
+            // socket.send(JSON.stringify(message_auth));
+
+
+            // var message2 = {
+            //     classLessonId: "875298",
+            //     classType: "1",
+            //     companyId: "126890",
+            //     date: 1600936486131,
+            //     deviceId: "110bdadfab7c54411f2c041faa3933e2",
+            //     schoolId: "111111210",
+            //     token: "D59484EC861908521F5287A429BFACCB",
+            //     type: "NETTY_REPLAY_IN_REQ",
+            //     userId: "2735330",
+            //     watchType: "1"
+            // }
+            // socket.send(JSON.stringify(message2));
+        } else {
+            alert("The socket is not open.");
+        }
+    }
+
+
+    function send2() {
+        // debugger;
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN) {
+            // var message_switch_question =  {"type":"switch_question","recordId":"15059791","exerciseType":"5","use":"exam","clientId":"","targetIndex":"15","exercisePageKey":"exercise:questions:paper:user_35387_record_id_15059791_9"}
+
+            // socket.send(JSON.stringify(message_switch_question));
+
+
+            // 收藏
+            // var message_sign = {"type":"sign","recordId":2506277,"exerciseType":"9","use":"exam","index":1,"cIndex":"0","qsId":6083973213347869,"exercisePageKey":"exercise:questions:paper:snapshot:exam_6719f8da4a6b460abdef2cff5c33408a_0"}
+            // socket.send(JSON.stringify(message_sign));
+            // // 交卷
+            // var message_submit = {"type":"paper_questions_v2","exerciseType":"5","recordId":"21","use":"exam","paperId":0,"clientId":"","prevSessionId":"00163efffe0c9115-00000001-0000006c-f4f1b38c09468b93-00db5264"}
+            // socket.send(JSON.stringify(message_submit));
+
+
+            var message_submit = {"type":"submit_question","recordId":29900929,"exerciseType":"7","index":1,"cIndex":"0","answer":"[\"A\"]","clientId":"","exercisePageKey":"exercise:questions:paper:user_87_record_id_29900929_0"}
+            socket.send(JSON.stringify(message_submit));
+
+            message_submit = {"type":"submit_question","recordId":29900929,"exerciseType":"7","index":2,"cIndex":"0","answer":"[\"A\"]","clientId":"","exercisePageKey":"exercise:questions:paper:user_87_record_id_29900929_0"}
+            socket.send(JSON.stringify(message_submit));
+
+            message_submit = {"type":"submit_question","recordId":29900929,"exerciseType":"7","index":3,"cIndex":"0","answer":"[\"A\"]","clientId":"","exercisePageKey":"exercise:questions:paper:user_87_record_id_29900929_0"}
+            socket.send(JSON.stringify(message_submit));
+            
+            message_submit = {"type":"submit_question","recordId":29900929,"exerciseType":"7","index":4,"cIndex":"0","answer":"[\"A\"]","clientId":"","exercisePageKey":"exercise:questions:paper:user_87_record_id_29900929_0"}
+            socket.send(JSON.stringify(message_submit));
+
+            message_submit = {"type":"submit_question","recordId":29900929,"exerciseType":"7","index":5,"cIndex":"0","answer":"[\"ABCD\"]","clientId":"","exercisePageKey":"exercise:questions:paper:user_87_record_id_29900929_0"}
+            socket.send(JSON.stringify(message_submit));
+
+
+        } else {
+            alert("The socket is not open.");
+        }
+    }
+
+
+    function send3() {
+        // debugger;
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN) {
+            // var message_switch_question = {"type":"submit_question","recordId":2454799,"exerciseType":"1","index":2,"cIndex":"0","answer":"[\"A\"]","clientId":"","exercisePageKey":"exercise:snapshot:paper:487_0"}
+
+            // socket.send(JSON.stringify(message_switch_question));
+
+
+            // 收藏
+            // var message_sign = {"type":"sign","recordId":2506277,"exerciseType":"9","use":"exam","index":1,"cIndex":"0","qsId":6083973213347869,"exercisePageKey":"exercise:questions:paper:snapshot:exam_6719f8da4a6b460abdef2cff5c33408a_0"}
+            // socket.send(JSON.stringify(message_sign));
+            // // 交卷
+            var message_submit = {"type":"submit","recordId":29900929}
+            // var message_submit = {"type":"submit_question","recordId":15452751,"exerciseType":"7","index":1,"cIndex":"36","answer":"[\"C\"]","clientId":"","exercisePageKey":"exercise:snapshot:paper:1234_8"}
+            socket.send(JSON.stringify(message_submit));
+
         } else {
             alert("The socket is not open.");
         }
     }
 </script>
 <form onsubmit="return false;">
-    <input type="text" name="message" value="Hello, World!"/>
-    <input type="button" value="Send Web Socket Data" onclick="send(this.form.message.value)"/>
+    <input type="button" value="Send Web Socket Data" onclick="send()"/>
+    <input type="button" value="Send2" onclick="send2()"/>
+    <input type="button" value="Send3" onclick="send3()"/>
 </form>
 </body>
 </html>

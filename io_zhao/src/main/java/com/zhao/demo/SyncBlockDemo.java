@@ -28,12 +28,12 @@ public class SyncBlockDemo {
         System.out.println("基于异步阻塞1:"+asyncResult);
 
         // 异步阻塞: 回调
-        Async async = new Async();
+        Async2 async = new Async2();
         asyncMethod2(async, 1, 2);
         System.out.println("基于异步阻塞2:"+async.getReturnValue());
 
         // 异步非阻塞
-        Async async2 = new Async();
+        Async2 async2 = new Async2();
         new Thread(() -> asyncMethod2(async, 1, 2)).start();
         System.out.println("基于异步非阻塞:"+async2.getReturnValue());
 
@@ -49,7 +49,7 @@ public class SyncBlockDemo {
         return async.callback(a,b);
     }
 
-    public static void asyncMethod2(Async async, int a, int b){
+    public static void asyncMethod2(Async2 async, int a, int b){
         async.setReturnValue(a+b);
         async.setFlag(true);
     }
@@ -61,7 +61,14 @@ public class SyncBlockDemo {
 
 
 
-    static class Async {
+    static class Async implements AsyncInterface {
+        @Override
+        public int callback(int a, int b) {
+            return a + b;
+        }
+    }
+
+    static class Async2 {
 
         private Object returnValue;
         private Boolean flag;

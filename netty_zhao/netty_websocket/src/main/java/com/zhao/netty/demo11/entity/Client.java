@@ -1,15 +1,12 @@
 package com.zhao.netty.demo11.entity;
 
-/**
- * Created by zhoumengkang on 16/7/2.
- */
 public class Client {
     private long id;
-    private int roomId;
+    private String event;
 
     public Client() {
         id = 0L;
-        roomId = 0;
+        event = "";
     }
 
     public long getId() {
@@ -20,11 +17,11 @@ public class Client {
         this.id = id;
     }
 
-    public int getRoomId() {
-        return roomId;
+    public String getEvent() {
+        return event;
     }
 
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
+    public void setEvent(String event) {
+        this.event = event;
     }
 }

@@ -4,6 +4,7 @@
     <title></title>
 </head>
 <body>
+<script type="text/javascript" src="js/reconnecting-websocket.min.js" ></script>
 <script type="text/javascript">
     var socket;
     var timer;
@@ -11,7 +12,7 @@
         window.WebSocket = window.MozWebSocket;
     }
     if (window.WebSocket) {
-        socket = new WebSocket("ws://localhost:8083/websocket?clientInfo=e2lkOjEscmlkOjEsdG9rZW46JzQzNjA2ODExYzczMDVjY2M2YWJiMmJlMTEzNDU2YmZkJ30=");
+        socket = new ReconnectingWebSocket("ws://localhost:8083/websocket?clientInfo=e2lkOjEsZXZlbnQ6J2xvZ2luJyx0b2tlbjonNDM2MDY4MTFjNzMwNWNjYzZhYmIyYmUxMTM0NTZiZmEnfQ==");
         socket.onmessage = function (event) {
             console.log(event.data);
         };
@@ -33,7 +34,11 @@
             return;
         }
         if (socket.readyState == WebSocket.OPEN) {
-            socket.send(message);
+            if (message == 'close') {
+                socket.close();
+            } else {
+                socket.send(message);
+            }
         } else {
             alert("The socket is not open.");
         }

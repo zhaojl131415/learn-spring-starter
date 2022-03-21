@@ -35,7 +35,9 @@ public class BioClient {
                 if (s.trim().equals("bye")) {
                     break;
                 }
+                //
                 os.write(s.getBytes());
+                //
                 os.flush();
             }
         } catch (IOException e) {

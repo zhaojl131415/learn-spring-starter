@@ -37,9 +37,10 @@ public class BioServerHandler implements Runnable {
                 String line = new String(bytes, 0, count, "utf-8");
                 System.out.println("收到客户端" + socket.getRemoteSocketAddress().toString() + "的消息:"+line);
 
-                content = line.trim().equalsIgnoreCase("SJ") ? new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()) : "啥啥啥, 你这说的都是啥啊?";
+                content = line.trim().equalsIgnoreCase("SJ") ? new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) : "啥啥啥, 你这说的都是啥啊?";
                 // 往客户端写数据
                 os.write(content.getBytes());
+                // 清空缓冲区中的数据
                 os.flush();
             }
         } catch (IOException e) {

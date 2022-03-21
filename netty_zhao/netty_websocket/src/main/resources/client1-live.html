@@ -4,6 +4,7 @@
     <title></title>
 </head>
 <body>
+<script type="text/javascript" src="js/reconnecting-websocket.min.js" ></script>
 <script type="text/javascript">
     var socket;
     var timer;
@@ -11,7 +12,7 @@
         window.WebSocket = window.MozWebSocket;
     }
     if (window.WebSocket) {
-        socket = new WebSocket("ws://localhost:8083/websocket/?clientInfo=e2lkOjEscmlkOjExLHRva2VuOic0MzYwNjgxMWM3MzA1Y2NjNmFiYjJiZTExMzQ1NmJmZCd9");
+        socket = new ReconnectingWebSocket("ws://localhost:8083/websocket?clientInfo=e2lkOjEsZXZlbnQ6J2xpdmUnLHRva2VuOic0MzYwNjgxMWM3MzA1Y2NjNmFiYjJiZTExMzQ1NmJmYid9");
         socket.onmessage = function (event) {
             console.log(event.data);
         };

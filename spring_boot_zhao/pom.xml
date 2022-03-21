@@ -26,6 +26,7 @@
         <module>spring_boot_event_zhao</module>
         <module>spring_boot_autoconfigure</module>
         <module>spring_boot_netty_websocket</module>
+        <module>spring_boot_websocket</module>
     </modules>
 
     <dependencies>
