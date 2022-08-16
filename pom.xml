@@ -38,6 +38,7 @@
         <module>servlet</module>
         <module>algorithm</module>
         <module>spring-framework</module>
+        <module>xxl-job</module>
     </modules>
 
     <dependencies>
