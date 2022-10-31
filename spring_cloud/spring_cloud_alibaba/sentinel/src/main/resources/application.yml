@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: sentinel
+  cloud:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+      # spring-cloud-alibaba-sentinel-datasource: com.alibaba.cloud.sentinel.SentinelProperties
+#      datasource:
+#        ds1:   #名称自定义，唯一
+#          nacos:
+#            server-addr: 127.0.0.1:8848
+#            dataId: ${spring.application.name}-flow
+#            groupId: DEFAULT_GROUP
+#            data-type: json
+#            rule-type: flow
+#        flow-rules:
+#          nacos:
+#            server-addr: 127.0.0.1:8848
+#            dataId: ${spring.application.name}-flow-rules
+#            groupId: SENTINEL_GROUP   # 注意groupId对应Sentinel Dashboard中的定义
+#            data-type: json
+#            rule-type: flow
+#        degrade-rules:
+#          nacos:
+#            server-addr: 127.0.0.1:8848
+#            dataId: ${spring.application.name}-degrade-rules
+#            groupId: SENTINEL_GROUP
+#            data-type: json
+#            rule-type: degrade
+#        param-flow-rules:
+#          nacos:
+#            server-addr: 127.0.0.1:8848
+#            dataId: ${spring.application.name}-param-flow-rules
+#            groupId: SENTINEL_GROUP
+#            data-type: json
+#            rule-type: param-flow
+#        authority-rules:
+#          nacos:
+#            server-addr: 127.0.0.1:8848
+#            dataId: ${spring.application.name}-authority-rules
+#            groupId: SENTINEL_GROUP
+#            data-type: json
+#            rule-type: authority
+#        system-rules:
+#          nacos:
+#            server-addr: 127.0.0.1:8848
+#            dataId: ${spring.application.name}-system-rules
+#            groupId: SENTINEL_GROUP
+#            data-type: json
+#            rule-type: system
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+
+server:
+  port: 9091
