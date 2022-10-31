@@ -39,6 +39,8 @@
         <module>algorithm</module>
         <module>spring-framework</module>
         <module>xxl-job</module>
+        <module>guava</module>
+        <module>redis</module>
     </modules>
 
     <dependencies>

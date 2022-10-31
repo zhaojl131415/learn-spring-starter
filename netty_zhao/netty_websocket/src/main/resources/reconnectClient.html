@@ -22,7 +22,7 @@
     if (window.WebSocket) {
         // socket = new ReconnectingWebSocket("ws://netty.dev.yunduoketang.cn/websocket");
         // socket = new ReconnectingWebSocket("ws://netty.rel-s.yunduoketang.cn/websocket");
-        socket = new ReconnectingWebSocket("ws://localhost:18888/websocket");
+        socket = new ReconnectingWebSocket("ws://localhost:8083/websocket");
         socket.onmessage = function (event) {
             console.log(event.data);
             // alert(event.data);

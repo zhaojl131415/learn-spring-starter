@@ -21,7 +21,7 @@
         <module>nacos-consumer-feign-sentinel</module>
         <module>nacos-provider</module>
         <module>rocketmq-provider</module>
-        <module>sentinal</module>
+        <module>sentinel</module>
     </modules>
 
     <properties>

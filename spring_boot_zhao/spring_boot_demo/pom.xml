@@ -6,7 +6,6 @@
         <groupId>com.zhao</groupId>
         <artifactId>spring_boot_zhao</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.zhao</groupId>
     <artifactId>spring_boot_demo</artifactId>

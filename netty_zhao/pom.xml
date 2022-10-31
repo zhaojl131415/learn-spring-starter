@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>netty_websocket</module>
-        <module>netty-websocket</module>
     </modules>
 
     <properties>
