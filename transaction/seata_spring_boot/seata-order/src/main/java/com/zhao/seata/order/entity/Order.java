@@ -47,12 +47,12 @@ public class Order implements Serializable {
     private Integer price;
 
     /**
-     * 单价
+     * 数量
      */
     private Integer quantity;
 
     /**
-     * 单价
+     * 总价
      */
     private Integer totalPrice;
 

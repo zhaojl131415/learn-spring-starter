@@ -25,7 +25,7 @@ public class OrderService {
     @Autowired
     private UserClient userClient;
 
-//    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @GlobalTransactional(name = "zhao-seata-order",rollbackFor = Exception.class)
     public void create() {
 
