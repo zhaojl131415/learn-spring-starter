@@ -41,6 +41,7 @@
         <module>xxl-job</module>
         <module>guava</module>
         <module>redis</module>
+        <module>agent-java</module>
     </modules>
 
     <dependencies>
