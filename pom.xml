@@ -42,6 +42,7 @@
         <module>guava</module>
         <module>redis</module>
         <module>agent-java</module>
+        <module>basics-java</module>
     </modules>
 
     <dependencies>
