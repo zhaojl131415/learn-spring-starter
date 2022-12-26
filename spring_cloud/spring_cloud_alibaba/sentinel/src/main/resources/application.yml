@@ -5,6 +5,8 @@ spring:
     sentinel:
       transport:
         dashboard: 127.0.0.1:8080
+      # 取消控制台懒加载，项目启动即连接Sentinel
+      eager: true
       # spring-cloud-alibaba-sentinel-datasource: com.alibaba.cloud.sentinel.SentinelProperties
       datasource:
 #        ds1:   #名称自定义，唯一
@@ -17,6 +19,7 @@ spring:
         flow-rules:
           nacos:
             server-addr: 127.0.0.1:8848
+            namespace: zhaojl
             dataId: ${spring.application.name}-flow-rules
             groupId: SENTINEL_GROUP   # 注意groupId对应Sentinel Dashboard中的定义
             data-type: json
@@ -24,6 +27,7 @@ spring:
         degrade-rules:
           nacos:
             server-addr: 127.0.0.1:8848
+            namespace: zhaojl
             dataId: ${spring.application.name}-degrade-rules
             groupId: SENTINEL_GROUP
             data-type: json
@@ -31,6 +35,7 @@ spring:
         param-flow-rules:
           nacos:
             server-addr: 127.0.0.1:8848
+            namespace: zhaojl
             dataId: ${spring.application.name}-param-flow-rules
             groupId: SENTINEL_GROUP
             data-type: json
@@ -38,6 +43,7 @@ spring:
         authority-rules:
           nacos:
             server-addr: 127.0.0.1:8848
+            namespace: zhaojl
             dataId: ${spring.application.name}-authority-rules
             groupId: SENTINEL_GROUP
             data-type: json
@@ -45,6 +51,7 @@ spring:
         system-rules:
           nacos:
             server-addr: 127.0.0.1:8848
+            namespace: zhaojl
             dataId: ${spring.application.name}-system-rules
             groupId: SENTINEL_GROUP
             data-type: json
@@ -56,3 +63,8 @@ spring:
 
 server:
   port: 9091
+
+# 开启sentinel对feign的支持
+feign:
+  sentinel:
+    enabled: true
