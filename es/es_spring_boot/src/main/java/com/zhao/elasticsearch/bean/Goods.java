@@ -1,80 +1,98 @@
 package com.zhao.elasticsearch.bean;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import lombok.*;
-import org.elasticsearch.index.VersionType;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-
-
-@Document(indexName = "goods", type = "_doc", shards = 1, replicas = 0, createIndex = false, useServerConfiguration = true, versionType = VersionType.EXTERNAL)
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Goods {
+public class Goods extends IdBase {
 
-    @Id
-    private long id;
-
-    @Field(type = FieldType.Keyword)
     private String sn;
 
-    @Field(type = FieldType.Text)
     private String name;
 
-    @Field(type = FieldType.Double)
     private double price;
 
-    @Field(type = FieldType.Integer)
     private int num;
 
-    @Field(type = FieldType.Keyword)
     private int alert_num;
 
-    @Field(type = FieldType.Keyword)
     private String image;
 
-    @Field(type = FieldType.Keyword)
     private String images;
 
-    @Field(type = FieldType.Double)
     private double weight;
 
-    @Field(type = FieldType.Date)
     private String create_time;
 
-    @Field(type = FieldType.Date)
     private String update_time;
 
-    @Field(type = FieldType.Keyword)
     private String spu_id;
 
-    @Field(type = FieldType.Integer)
     private int category_id;
 
-    @Field(type = FieldType.Text)
     private String category_name;
 
-    @Field(type = FieldType.Keyword)
     private String brand_name;
 
-    @Field(type = FieldType.Text)
     private String spec;
 
-    @Field(type = FieldType.Integer)
     private int sale_num;
 
-    @Field(type = FieldType.Integer)
     private int comment_num;
 
-    @Field(type = FieldType.Integer)
     private int status;
 
-    @Version
     private Long version;
+
+    public Goods(String id, String sn, String name, double price, int num, int alert_num, String image, String images, double weight, String create_time, String update_time, String spu_id, int category_id, String category_name, String brand_name, String spec, int sale_num, int comment_num, int status, Long version) {
+        super(id);
+        this.sn = sn;
+        this.name = name;
+        this.price = price;
+        this.num = num;
+        this.alert_num = alert_num;
+        this.image = image;
+        this.images = images;
+        this.weight = weight;
+        this.create_time = create_time;
+        this.update_time = update_time;
+        this.spu_id = spu_id;
+        this.category_id = category_id;
+        this.category_name = category_name;
+        this.brand_name = brand_name;
+        this.spec = spec;
+        this.sale_num = sale_num;
+        this.comment_num = comment_num;
+        this.status = status;
+        this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return "Goods{" +
+                "id='" + super.getId() + '\'' +
+                ", sn='" + sn + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", num=" + num +
+                ", alert_num=" + alert_num +
+                ", image='" + image + '\'' +
+                ", images='" + images + '\'' +
+                ", weight=" + weight +
+                ", create_time='" + create_time + '\'' +
+                ", update_time='" + update_time + '\'' +
+                ", spu_id='" + spu_id + '\'' +
+                ", category_id=" + category_id +
+                ", category_name='" + category_name + '\'' +
+                ", brand_name='" + brand_name + '\'' +
+                ", spec='" + spec + '\'' +
+                ", sale_num=" + sale_num +
+                ", comment_num=" + comment_num +
+                ", status=" + status +
+                ", version=" + version +
+                '}';
+    }
 }

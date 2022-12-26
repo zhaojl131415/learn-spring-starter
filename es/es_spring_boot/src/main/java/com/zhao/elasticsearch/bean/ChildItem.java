@@ -2,11 +2,9 @@ package com.zhao.elasticsearch.bean;
 
 import lombok.*;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class ChildItem {
     private int id;
     private String name;

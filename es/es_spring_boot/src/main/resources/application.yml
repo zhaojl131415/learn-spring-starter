@@ -1,0 +1,12 @@
+spring:
+  elasticsearch:
+    rest:
+      # 是否启用es
+      enable: true
+      uris: localhost:9200
+      host: localhost
+      port: 9200
+      username: elastic
+      password: d3bCFqY9sef=_jWX75SC
+      index: zhao
+      crtName: http_ca.crt
