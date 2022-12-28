@@ -2,9 +2,14 @@ package com.zhao.elasticsearch.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.util.ObjectBuilder;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zhao.elasticsearch.bean.Goods;
 import com.zhao.elasticsearch.bean.IdBase;
 import com.zhao.elasticsearch.service.DocumentService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +21,7 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -79,6 +85,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public <T> UpdateResponse<T> update(String idxName, String idxId, T document, Class<T> clazz) throws Exception {
         return elasticsearchClient.update(u -> u.index(idxName).id(idxId).doc(document), clazz);
+//        return elasticsearchClient.updateByQuery(u -> u.index(idxName).(document));
     }
 
     /**
@@ -109,8 +116,25 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public ObjectNode getObjectNodeById(String idxName, String docId) throws IOException {
         GetResponse<ObjectNode> response = elasticsearchClient.get(g -> g.index(idxName).id(docId), ObjectNode.class);
-
         return response.found() ? response.source() : null;
+    }
+
+    @Override
+    public <T> List<Hit<T>> search(String idxName, Function<Query.Builder, ObjectBuilder<Query>> queryFn,
+                                        Function<SortOptions.Builder, ObjectBuilder<SortOptions>> sortFn,
+                                        Integer from, Integer size, Class<T> clazz) throws IOException {
+        SearchResponse<T> search = elasticsearchClient.search(s -> s
+                .index(idxName)
+                //查询
+                .query(queryFn)
+                //分页查询，从第from页开始查询size个document
+                .from(from)
+                .size(size)
+                //排序
+                .sort(sortFn),
+                clazz
+        );
+        return search.hits().hits();
     }
 
     @Override

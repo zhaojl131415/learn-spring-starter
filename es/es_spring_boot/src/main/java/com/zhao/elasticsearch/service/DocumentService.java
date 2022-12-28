@@ -1,14 +1,20 @@
 package com.zhao.elasticsearch.service;
 
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.UpdateResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.util.ObjectBuilder;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zhao.elasticsearch.bean.IdBase;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * TODO
@@ -108,6 +114,21 @@ public interface DocumentService {
      */
     ObjectNode getObjectNodeById(String idxName, String docId) throws IOException;
 
+    /**
+     *
+     * @param idxName 索引名
+     * @param queryFn
+     * @param sortFn
+     * @param from
+     * @param size
+     * @param clazz
+     * @return
+     * @param <T>
+     * @throws IOException
+     */
+    <T> List<Hit<T>> search(String idxName, Function<Query.Builder, ObjectBuilder<Query>> queryFn,
+                            Function<SortOptions.Builder, ObjectBuilder<SortOptions>> sortFn,
+                            Integer from, Integer size, Class<T> clazz) throws IOException;
     /**
      * 根据文档id删除文档
      * @param idxName 索引名

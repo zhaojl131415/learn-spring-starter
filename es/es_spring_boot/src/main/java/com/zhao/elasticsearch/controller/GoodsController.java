@@ -1,9 +1,11 @@
 package com.zhao.elasticsearch.controller;
 
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.UpdateResponse;
 import co.elastic.clients.elasticsearch.core.bulk.BulkResponseItem;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zhao.elasticsearch.bean.Goods;
@@ -100,30 +102,20 @@ public class GoodsController {
         }
     }
 
-//    @PostMapping("/search/{keyword}")
-//    public void search(@PathVariable String keyword) {
-//        try {
-//            SearchResponse<Goods> search = elasticsearchClient.search(s -> s
-//                    .index(INDEX)
-//                    //查询name字段包含hello的document(不使用分词器精确查找)
-//                    .query(q -> q
-//                            .term(t -> t
-//                                    .field("sn")
-//                                    .value(v -> v.stringValue(keyword))
-//                            ))
-//                    //分页查询，从第0页开始查询3个document
-//                    .from(0)
-//                    .size(3)
-//                    //按age降序排序
-//                    .sort(f -> f.field(o -> o.field("price").order(SortOrder.Desc))), Goods.class
-//            );
-//            for (Hit<Goods> hit : search.hits().hits()) {
-//                System.out.println(hit.source());
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @PostMapping("/search/{keyword}")
+    public void search(@PathVariable String keyword) {
+        try {
+            List<Hit<Goods>> list = documentService.search(INDEX,
+                    q -> q.match(t -> t.field("name").query(keyword)),
+                    f -> f.field(o -> o.field("price").order(SortOrder.Desc)),
+                    0, 3, Goods.class);
+            for (Hit<Goods> hit : list) {
+                System.out.println(hit.source());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @PostMapping("/bulk")
     public void bulk() {
