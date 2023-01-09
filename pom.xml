@@ -43,6 +43,7 @@
         <module>redis</module>
         <module>agent-java</module>
         <module>basics-java</module>
+        <module>shardingSphere</module>
     </modules>
 
     <dependencies>
